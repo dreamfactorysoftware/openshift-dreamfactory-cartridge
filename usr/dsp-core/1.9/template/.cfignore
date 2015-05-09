@@ -1,0 +1,10 @@
+app.json
+.profile.d/
+Procfile
+/log/*
+vendor
+web/assets/*
+manifest.yml
+.git/
+docs/
+.idea/

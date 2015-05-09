@@ -1,0 +1,8 @@
+{
+	"WEB_SERVER":     "nginx",
+	"LIBDIR":         ".",
+	"WEBDIR":         "web",
+	"NGINX_VERSION":  "{NGINX_16_LATEST}",
+	"PHP_MODULES":    ["pear"],
+	"PHP_EXTENSIONS": ["bz2", "zlib", "curl", "mcrypt", "mongo", "pdo", "pdo_mysql", "mysql", "zip", "fileinfo"]
+}

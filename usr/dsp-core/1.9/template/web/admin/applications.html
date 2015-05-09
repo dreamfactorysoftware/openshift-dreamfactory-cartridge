@@ -1,0 +1,250 @@
+<nav class="navbar navbar-default bg-info" role="navigation">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#admin-app-apps">
+				<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+			</button>
+			<span class="navbar-brand">Application Manager</span>
+		</div>
+
+		<div class="collapse navbar-collapse" id="admin-app-apps">
+			<div class="nav navbar-nav navbar-right">
+				<div class="btn-group btn-group-nav">
+					<div data-ng-include="'_downloads.html'"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</nav>
+
+<!-- Default panel contents -->
+<table id="resource-container">
+<tr>
+<td>
+	<input placeholder="Filter by Name" type="text" class="form-control" data-ng-model="searchText" />
+	<br />
+
+	<ul id="resource-list" class="list-group">
+
+		<li ng-click="showDetails()" data-ng-class="app.id === currentAppId ? 'active' : ''"
+			class="list-group-item" ng-repeat="app in Apps.record | filter:searchText" id="row_{{app.id}}">
+			<span class="resource-name">{{app.name}}</span>
+
+                            <span class="btn-group btn-group-sm" style="text-align:right;">
+                                <button data-ng-disabled="app.launch_url == null || app.launch_url ==''"
+									class="btn btn-default" title="Preview this app"
+									ng-click="showAppPreview(app.launch_url, app.api_name)"><i
+									class="fa fa-eye"></i></button>
+                                <button data-ng-disabled="!app.storage_service_id" class="btn btn-default"
+									title="Manage app files" ng-click="showFileManager()"><i
+									class="fa fa-folder-open"></i></button>
+                                <button class="btn btn-default" title="Delete this app" ng-click="delete()"><i
+									class="fa fa-trash-o"></i></button>
+                            </span>
+
+		</li>
+	</ul>
+</td>
+<td style="width:100%">
+	<div class="well well-sm">
+		<div class="">
+			<h4 style="display: inline-block; " class="ng-binding">{{action}} Application</h4>
+
+			<div class="btn-toolbar pull-right">
+				<div class="btn-group btn-group-sm btn-group-nav">
+					<button type="button" class="btn btn-default" data-ng-click="goToImport()"><i class="fa fa-upload"></i>Import</button>
+					<button type="button" class="btn btn-default" data-ng-click="promptForNew()"><i class="fa fa-plus-circle"></i>New</button>
+					<button type="button" class="btn btn-default update_button" data-ng-show="action=='Update'" data-ng-click="save()">
+                        <i class="fa fa-save"></i>Update
+					</button>
+					<button type="button" class="btn btn-default save_button" data-ng-show="action=='Create'" data-ng-click="create()">
+                        <i class="fa fa-save"></i>Save
+                    </button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div>
+
+		<div class="add_new">
+			<div id="file-manager">
+				<iframe style="display:none" frameBorder=0 ng-src=""></iframe>
+			</div>
+			<div id="app-preview">
+				<iframe style="display:none" frameBorder=0 ng-src=""></iframe>
+			</div>
+			<div id="step1">
+				<div id="context-root" class="local">
+					<label><b>App Name</b></label>
+					<span class="text-info"> <strong>This is your API KEY (X-DreamFactory-Application-Name) </strong></span>
+
+					<input class="form-control" ng-disabled="action=='Update'" type="text"
+						ng-model="app.api_name">
+				</div>
+				<br />
+
+				<div class="options">
+					<label><i class="fa fa-hdd-o"></i>&nbsp;<b>Where will this app live?</b></label>
+					<ul class="list-group">
+						<li class="list-group-item">
+							<input type="radio" ng-model="app.is_url_external" value='0' />
+							&nbsp;&nbsp;Use our default file storage service or one of your own.
+						</li>
+						<li class="list-group-item">
+							<input type="radio" ng-model="app.is_url_external" value='-1' />
+							&nbsp;&nbsp;On a native device or remote client / desktop.
+						</li>
+						<li class="list-group-item">
+							<input type="radio" ng-model="app.is_url_external" value='1' />
+							&nbsp;&nbsp;I will just supply a URL to point to my application.
+							<div data-ng-if="app.is_url_external==1">
+								<br />
+
+								<input class="form-control" style="width:80%;"
+									placeholder="http://www.myserver.com/"
+									name="app_path" type="text"
+									ng-model="app.url">
+							</div>
+
+						</li>
+					</ul>
+
+					<br />
+
+					<div data-ng-if="app.is_url_external == 1" class="alert alert-success">
+						<i class="fa fa-cloud"></i>
+						&nbsp;Your URL will be: {{app.url}}
+					</div>
+					<div data-ng-hide="app.is_url_external!=0"
+						id="remote_storage">Choose where you want your files for this app stored. The file service is our default storage service. <br />
+
+						<label ng-hide="app.is_url_external!=0">Storage Service</label>
+						<select class="form-control" ng-change="loadStorageContainers()"
+							ng-hide="app.is_url_external!=0"
+							ng-model="app.storage_service_id">
+							<option ng-selected="service.id == app.storage_service_id" value={{service.id}}
+								ng-repeat="service in storageServices">{{service.api_name}}
+							</option>
+						</select> <br />
+
+						<label ng-hide="app.is_url_external != 0">Storage Container</label>
+						<select class="form-control" ng-hide="app.is_url_external != 0" id="storage_options"
+							ng-model="app.storage_container"
+							ng-options="option.name as option.name for option in storageOptions"> </select>
+					</div>
+				</div>
+				<br />
+
+				<div ng-hide="app.is_url_external != 0">
+					<p><b>Public name on LaunchPad</b></p>
+
+					<input class="form-control" type="text" ng-model="app.name">
+				</div>
+				<br />
+
+				<div ng-hide="app.is_url_external != 0">
+					<p><b>Public description on LaunchPad</b></p>
+
+					<input class="form-control" name="app_desc" type="text" ng-model="app.description">
+				</div>
+				<br />
+
+				<div ng-show="app.is_url_external==0">
+					<p><b>Default Path <span class="text-info"> This is the default file to load when your app is loaded.</span> </b>
+					</p>
+
+					<input class="form-control" class="local" placeholder="index.html" name="app_path"
+						type="text"
+						ng-model="app.url">
+					<br />
+
+					<div ng-show="app.is_url_external==0" class="alert alert-success local">
+						<i class="fa fa-cloud"></i>
+						&nbsp;Your URL will be: {{currentServer}}/{{storageContainers[app.storage_service_id].name}}/{{app.storage_container}}/{{app.api_name}}<span>{{app.url}}</span>
+					</div>
+				</div>
+				<div ng-hide="app.is_url_external != 0">
+					<i class="fa fa-expand"></i> <b>Full Screen Options</b><br /><br />
+
+					<ul class="list-group">
+						<li class="list-group-item">
+							<input class="form-control-static" type="checkbox"
+								ng-checked="app.requires_fullscreen == 1"
+								ng-model="app.requires_fullscreen">
+							&nbsp;Run Full Screen without Toggle
+						</li>
+						<li class="list-group-item">
+							<input class="form-control-static" type="checkbox"
+								ng-checked="app.allow_fullscreen_toggle == 1"
+								ng-model="app.allow_fullscreen_toggle">
+							&nbsp;Show Full Screen with Toggle
+						</li>
+					</ul>
+
+					<br />
+
+				</div>
+
+				<div><br />
+
+					<p><b>Assign this app to a role(s).</b></p>
+
+					<div class="alert alert-info">
+						<i class="fa fa-info-circle"></i> Each user who is assigned to one of the selected roles will have access to this app. Go to the Roles tab to create and manage roles.
+					</div>
+					<table class="table table-hover table-striped table-bordered">
+
+						<tr ng-repeat="role in Roles.record" id="row_{{role.id}}">
+							<td>
+								<input ng-click="addRoleToApp($event.target.checked)"
+									ng-checked="isAppInRole()"
+									type="checkbox" />
+							</td>
+							<td style="width:100%">{{role.name}}</td>
+
+						</tr>
+
+					</table>
+
+				</div>
+
+			</div>
+
+			<div id="alert_container">
+				<div ng-repeat="alert in alerts" class="alert">
+					<button onclick="$('.alert').fadeOut();" type="button" class="close">&times;</button>
+					<strong>{{alert.message}}</strong>
+				</div>
+			</div>
+
+			<div data-ng-show="action=='Create'" id="create_button">
+				<input type="checkbox" data-ng-model="create_another" />
+				&nbsp;Create Another&nbsp; <a ng-click="create()"
+				class="btn btn-primary">
+				<i class="fa fa-arrow-circle-right"></i>
+				&nbsp;Create Application </a>
+			</div>
+			<div id="update_button" data-ng-show="action=='Update'">
+				<a ng-click="save()"
+					class="btn btn-primary">
+					<i class="fa fa-save"></i>
+					&nbsp;Update Application </a>
+			</div>
+
+		</div>
+	</div>
+</td>
+</tr>
+</table>
+
+<iframe style="display:none" id="sdk-download" src=""></iframe>
+
+<!-- List group -->
+
+</div>
+
+
+
+
+

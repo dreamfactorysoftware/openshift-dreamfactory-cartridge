@@ -1,0 +1,10 @@
+<div class="form-group">
+    <div class="alert alert-info">
+        <i class="fa fa-info-circle"></i>
+        Assign a default app for this user.
+    </div>
+    <p>Assign a Default App</p>
+    <select data-ng-disabled="currentEditRecord[templateData.dependent]" class="form-control" data-ng-model="currentEditRecord.default_app_id" data-ng-options="obj[overrideFields[templateData.prop].display.value] as obj[overrideFields[templateData.prop].display.label] for obj in overrideFields[templateData.prop].records">
+        <option value="">-- None --</option>
+    </select>
+</div>

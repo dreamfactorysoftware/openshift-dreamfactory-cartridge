@@ -1,0 +1,169 @@
+table.dataTable thead th {
+	font-size:   16px;
+	font-weight: bold;
+}
+
+div.dataTables_length label {
+	width:      460px;
+	float:      left;
+	text-align: left;
+}
+
+div.dataTables_length select {
+	width: 75px;
+}
+
+.dataTables_filter {
+	float:right;
+}
+
+div.dataTables_filter label {
+	float:     right;
+	font-size: 14px;
+	/*width: 460px;*/
+}
+
+div.dataTables_filter label input {
+	width: 360px;
+}
+
+div.dataTables_info {
+	padding-top: 8px;
+}
+
+div.dataTables_paginate {
+	float:  right;
+	margin: 0;
+}
+
+table {
+	margin: 1em 0;
+	clear:  both;
+}
+
+table.dataTable th:active {
+	outline: none;
+}
+
+/*
+ * Sorting
+ */
+.sorting {
+	cursor:     pointer;
+	background: url('/images/sort_both.png') no-repeat center right;
+}
+
+.sorting_asc {
+	background: url('/images/sort_asc.png') no-repeat center right;
+}
+
+.sorting_desc {
+	background: url('/images/sort_desc.png') no-repeat center right;
+}
+
+.sorting_asc_disabled {
+	background: url('/images/sort_asc_disabled.png') no-repeat center right;
+}
+
+.sorting_desc_disabled {
+	background: url('/images/sort_desc_disabled.png') no-repeat center right;
+}
+
+table.dataTable th:active {
+	outline: none;
+}
+
+.clickable, tr.clickable > td {
+	cursor: pointer;
+}
+
+table.dataTable tbody tr:hover {
+	background-color: #f5f8ff;
+}
+
+table.dataTable tbody tr td:hover {
+	background-color: #eeeeff;
+}
+
+.number, .znumber {
+	text-align: right;
+}
+
+span.filter_column input {
+	margin-bottom: 0;
+}
+
+th.input-small input.text_filter {
+	width: 50px;
+}
+
+th.input-medium input.text_filter {
+	width: 90px;
+}
+
+span.required {
+	display: none;
+}
+
+.form-horizontal .control-group > label {
+	margin-right: 8px;
+	width:        170px;
+}
+
+.form-horizontal .controls {
+	margin-left: 178px;
+}
+
+.form-horizontal .form-actions {
+	margin-top:   0;
+	padding-left: 178px;
+}
+
+table.table {
+	margin-bottom: 3px;
+}
+
+.table-condensed th, .table-condensed td {
+	padding: 2px 3px;
+}
+
+.pagination {
+	height: 20px;
+}
+
+.pagination a {
+	line-height: 15px;
+	padding:     0 7px;
+}
+
+.bold-big {
+	font-size:   14px;
+	font-weight: bold;
+	width:       auto;
+}
+
+legend span a {
+	font-size: 11px;
+	float:     right;
+}
+
+/*
+ * Processing indicator
+ */
+.dataTables_processing {
+	border:           1px solid #eaeaea;
+	background-color: #fafafa;
+	color:            #777;
+	font-size:        20px;
+	font-weight:      200;
+	border-radius:    4px;
+	text-shadow:      0 1px 0 #FFFFFF;
+}
+
+table.dataTable thead th {
+	border-bottom-color: #ccc;
+}
+
+table.dataTable tfoot th {
+	border-bottom-color: #ccc;
+}

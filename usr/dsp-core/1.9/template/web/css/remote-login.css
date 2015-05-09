@@ -1,0 +1,86 @@
+/*!
+ * dsp.ui.css
+ *
+ * Copyright 2014 DreamFactory Software, Inc.
+ * Licensed under the Apache License v2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * This file has been incorporated into dsp.login.css and is deprecated
+ */
+/*.remote-login {*/
+/*display:       block;*/
+/*margin-bottom: 8px;*/
+/*}*/
+
+/*.remote-login h5 {*/
+/*font-size:      18pt;*/
+/*text-align:     center;*/
+/*text-shadow:    0 1px 0 rgba(0, 0, 0, 0.3);*/
+/*padding-bottom: 12px;*/
+/*}*/
+
+/*.remote-login-wrapper {*/
+/*border-radius: 0;*/
+/*border:        1px solid #DFDFDF;*/
+/*padding:       10px;*/
+/*margin:        0 auto;*/
+/*}*/
+
+/*.remote-login-wrapper h4 {*/
+/*color:      #666;*/
+/*text-align: center;*/
+/*font-size:  17px;*/
+/*transition: color 0.3s ease-in-out;*/
+/*}*/
+
+/*.remote-login-wrapper:hover {*/
+/*box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);*/
+/*transition: box-shadow 0.3s ease-in-out;*/
+/*}*/
+
+/*.remote-login-wrapper:hover h4 {*/
+/*color:      #d2902a;*/
+/*transition: color 0.3s ease-in-out;*/
+/*}*/
+
+/*.remote-login [class^="icon-"], .remote-login [class*="icon-"] {*/
+/*border:         1px solid #ddd;*/
+/*float:          left;*/
+/*color:          #666;*/
+/*transition:     opacity 0.3s ease-in-out;*/
+/*opacity:        0.75;*/
+/*display:        inline-block;*/
+/*width:          48px;*/
+/*height:         48px;*/
+/*vertical-align: middle;*/
+/*text-align:     center;*/
+/*padding:        6px 6px 0;*/
+/*margin:         0 12px 0 auto;*/
+/*}*/
+
+/*.remote-login [class^="icon-"]:hover, .remote-login [class*="icon-"]:hover {*/
+/*box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);*/
+/*opacity:    1;*/
+/*transition: opacity 0.3s ease-in-out;*/
+/*}*/
+
+/*.remote-login-providers :hover {*/
+/*opacity: 1;*/
+/*cursor:  pointer;*/
+/*}*/
+
+/*.remote-provider-wrapper {*/
+/*position: relative;*/
+/*display:  block;*/
+/*}*/
+
+/*.remote-login-providers {*/
+/*margin:     12px auto 0;*/
+/*display:    table;*/
+/*text-align: center;*/
+/*}*/
+
+/*.remote-login-providers .icon-salesforce.icon-3x {*/
+/*background:      url(../img/icon-salesforce.png) center center no-repeat;*/
+/*background-size: 48px 48px;*/
+/*}*/

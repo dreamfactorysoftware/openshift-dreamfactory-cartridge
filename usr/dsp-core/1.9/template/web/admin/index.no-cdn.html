@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html data-ng-app="AdminApp" xmlns="http://www.w3.org/1999/html">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+	<link href="/static/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/static/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="/static/font-mfizz/1.2/font-mfizz.css" rel="stylesheet">
+
+	<link rel="stylesheet" href="/admin/css/style.css" type="text/css" />
+	<link rel="stylesheet" href="/css/df.callouts.css" type="text/css" />
+	<link rel="stylesheet" href="/admin/admin_components/dreamfactory_components/adf-table/style/style.css" type="text/css" />
+    <link rel="stylesheet" href="/admin/admin_components/dreamfactory_components/adf-scripting/style/style.css" type="text/css" />
+	<link rel="stylesheet" href="/static/pnotify/2.0.1/css/pnotify.custom.min.css" type="text/css" />
+
+	<script src="/static/jquery/2.1.1/jquery.min.js"></script>
+</head>
+<body id="admin-console">
+<div class="container-fluid app-wrapper">
+	<div class="row">
+		<div data-ng-controller="NavBarCtrl">
+			<div class="col-md-2 hidden-xs hidden-sm no-right-padding">
+				<sidebar-nav-one></sidebar-nav-one>
+			</div>
+
+			<div class="col-xs-12 col-md-10">
+				<div class="visible-xs visible-sm">
+					<topbar-nav-one></topbar-nav-one>
+				</div>
+
+				<div id="main-content">
+					<div id="angular-content" data-ng-view></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="loading-screen" style="display: none;">
+	<div class="loading-screen-body">
+		<h2><i class="fa fa-cog fa-spin"></i> <span class="hidden-xs">Loading...</span>
+		</h2>
+	</div>
+</div>
+
+<div id="login-page" style="display: none;">
+	<iframe seamless="seamless" id="login-frame"></iframe>
+</div>
+
+<script src="/static/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="/static/angular/1.2.20/angular.min.js"></script>
+<script src="/static/angular/1.2.20/angular-ui.min.js"></script>
+<script src="/static/angular/1.2.20/angular-resource.min.js"></script>
+<script src="/static/angular/1.2.20/angular-route.min.js"></script>
+
+<!-- DreamFactory Modules -->
+<script src="/admin/admin_components/dreamfactory_components/adf-utility/dreamfactory-utility.js"></script>
+<script src="/admin/admin_components/dreamfactory_components/adf-table/dreamfactory-table.js"></script>
+<script src="/admin/admin_components/dreamfactory_components/adf-system-config/dreamfactory-system-config.js"></script>
+<script src="/admin/admin_components/dreamfactory_components/adf-users/dreamfactory-users.js"></script>
+<script src="/admin/admin_components/dreamfactory_components/adf-navbar/dreamfactory-navbar.js"></script>
+<script src="/admin/admin_components/dreamfactory_components/adf-scripting/dreamfactory-scripting.js"></script>
+<script src="/admin/admin_components/dreamfactory_components/adf-import-app/dreamfactory-import-app.js"></script>
+
+
+<script src="/js/json2.js"></script>
+<script src="/js/utils.js"></script>
+
+<script src="/admin/js/controllers/quickstartctrl.js"></script>
+<script src="/admin/js/controllers/userctrl.js"></script>
+<script src="/admin/js/controllers/groupctrl.js"></script>
+<script src="/admin/js/controllers/rolectrl.js"></script>
+<script src="/admin/js/controllers/appctrl.js"></script>
+<script src="/admin/js/controllers/packagectrl.js"></script>
+<script src="/admin/js/controllers/config.js"></script>
+<script src="/admin/js/controllers/scriptctrl.js"></script>
+<script src="/admin/js/controllers/datactrl.js"></script>
+<script src="/admin/js/controllers/schemactrl.js"></script>
+<script src="/admin/js/controllers/servicectrl.js"></script>
+<script src="/admin/js/controllers/filectrl.js"></script>
+<script src="/admin/js/controllers/controllers.js"></script>
+
+<script src="/admin/js/directives/AdminApp.apisdk.js"></script>
+<script src="/admin/js/app.js"></script>
+
+<!-- Deferred Loads -->
+<script src="/admin/js/ng-grid/ng-grid-2.0.7.min.js" defer="defer"></script>
+<script src="/static/pnotify/2.0.1/js/pnotify.custom.min.js" defer="defer"></script>
+<script src="/admin/js/jsonlint.js" defer="defer"></script>
+<script src="/filemanager/js/ace/ace.js" defer="defer"></script>
+<script src="/filemanager/js/ace/mode-javascript.js" defer="defer"></script>
+</body>
+</html>

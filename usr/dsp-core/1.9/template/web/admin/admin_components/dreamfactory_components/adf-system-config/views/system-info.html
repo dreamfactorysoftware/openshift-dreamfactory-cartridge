@@ -1,0 +1,22 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a data-toggle="collapse" data-target="#system-info-config-body">
+            <h4 class="panel-title">System Info</h4>
+        </a>
+    </div>
+
+    <div class="panel-collapse collapse in" id="system-info-config-body">
+        <div class="panel-body">
+            <p>
+                Database Version: {{systemConfig.db_version}}
+            </p>
+            <p>
+                DreamFactory Services Platform Version: {{systemConfig.dsp_version}}
+            </p>
+            <div data-ng-if="systemConfig.upgrade_available == true">
+                DSP Version {{systemConfig.latest_version}} is available!&nbsp;&nbsp;
+				<a href="https://github.com/dreamfactorysoftware/dsp-core/wiki/Product-Upgrades" target="_blank" class="btn btn-success">How To Upgrade</a>
+            </div>
+        </div>
+    </div>
+</div>

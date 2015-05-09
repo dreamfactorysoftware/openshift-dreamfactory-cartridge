@@ -1,0 +1,54 @@
+/*!
+ * dsp.metro-colors.css
+ *
+ * Copyright 2014 DreamFactory Software, Inc.
+ * Licensed under the Apache License v2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Contains classes defining colors found in Microsoft's Metro
+ * Include at your leisure
+ */
+.bg_lb {
+	background: #27a9e3;
+}
+
+.bg_db {
+	background: #2295c9;
+}
+
+.bg_dg {
+	background: #239b63;
+}
+
+.bg_lg {
+	background: #28b779;
+}
+
+.bg_ly {
+	background: #ffb848;
+}
+
+.bg_dy {
+	background: #da9628;
+}
+
+.bg_ls {
+	background: #2255a4;
+}
+
+.bg_lo {
+	background: #da542e;
+}
+
+.bg_lr {
+	background: #f74d4d;
+}
+
+.bg_lv {
+	background: #603bbc;
+}
+
+.bg_lh {
+	background: #b6b3b3;
+}
+

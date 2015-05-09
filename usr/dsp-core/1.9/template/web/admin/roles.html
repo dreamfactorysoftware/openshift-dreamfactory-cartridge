@@ -1,0 +1,553 @@
+<div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="navbar navbar-default">
+                <span style="display: inline" class="navbar-brand">Role Manager</span>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Nav For small devices 'sm' && 'xs' -->
+    <div class="col-sm-12 visible-sm visible-xs" data-ng-class="xsWidth ? 'df-col-padding-override' : ''">
+        <div class="well well-sm">
+            <div class="">
+                <h4 style="display: inline-block; ">{{action}} Role</h4>
+                <small>
+                    <div class="btn-group pull-right" style="margin: 4px auto">
+                        <button type="button" class="btn btn-default btn-sm" data-ng-click="promptForNew()">Create New</button>
+                        <button data-ng-show="activeView === 'form'" type="button" class="btn btn-default btn-sm save_button" data-ng-click="create()">Save</button>
+                        <button data-ng-show="activeView === 'form'" type="button" class="btn btn-default btn-sm update_button" data-ng-click="save()">Update</button>
+                        <button data-ng-show="xsWidth && activeView === 'form'" type="button" class="btn btn-default btn-sm" data-ng-click="close()">Close</button>
+                    </div>
+                </small>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-sm-12 col-md-3 df-col-padding-override" data-ng-show="!xsWidth || (xsWidth && activeView === 'list')">
+        <div class="form-group">
+            <input placeholder="Filter by Name" type="text" class="form-control" data-ng-model="searchText"/>
+        </div>
+        <div class="list-group">
+            <a data-ng-click="showDetails()"
+                class="list-group-item"
+                data-ng-class="role.id === currentRoleId && !xsWidth ? 'active' : '' "
+                data-ng-repeat="role in Roles.record | filter:searchText" id="row_{{role.id}}">
+
+                <div class="input-group">
+                    <span style="position: relative; top: 6px">{{role.name}}</span>
+
+                    <span class="input-group-btn">
+                        <button style="border-bottom-left-radius: 3px !important; border-top-left-radius: 3px; !important;" class="btn btn-default btn-sm" title="Delete this role" data-ng-click="delete()"><i class="fa fa-trash-o"></i>
+                        </button>
+                    </span>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Nav for large devices -->
+    <div class="col-md-9 hidden-sm hidden-xs" data-ng-class="xsWidth ? 'df-col-padding-override' : ''">
+        <div class="well well-sm">
+            <div class="">
+                <h4 style="display: inline-block; ">{{action}} Role</h4>
+                <small>
+                    <div class="btn-group pull-right" style="margin: 4px auto">
+                        <button type="button" class="btn btn-default btn-sm" data-ng-click="promptForNew()">Create New</button>
+                        <button type="button" class="btn btn-default btn-sm save_button" data-ng-click="create()">Save</button>
+                        <button type="button" class="btn btn-default btn-sm update_button" data-ng-click="save()">Update</button>
+                        <button data-ng-show="xsWidth" type="button" class="btn btn-default btn-sm" data-ng-click="close()">Close</button>
+                    </div>
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- This is a hacky way to keep this UI from bouncing on load.
+    We need to preload data but I'm not doing that today. MNM -->
+
+    <div data-ng-if="(!rolesLoaded && !xsWidth) || (Roles.record.length === 0)" class="col-sm-3">
+        <span data-ng-show="(Roles.record.length === 0)">No Roles found.</span>
+        <div style="height: 300px; background: rgba(255, 0, 0, 0);"></div>
+    </div>
+
+    <div class="col-sm-12 col-md-9" data-ng-show="!xsWidth || (xsWidth && activeView === 'form')" data-ng-class="xsWidth && (activeView === 'form') ? 'df-col-padding-override' : ''">
+        <form novalidate class="css-form" name="roleform">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a data-toggle="collapse" data-target="#role-body">
+                        <h4 class="panel-title">Role Info</h4>
+                    </a>
+                </div>
+                <div id="role-body" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <div>
+                            <div class="detail-view"></div>
+                                <div class="add_new">
+                                    <div class="alert alert-info">
+                                        <li class="fa fa-info-circle fa-fw"></li>
+                                        Roles provide a way to grant or deny API access to specific services or simply access to specific apps.
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input class="form-control" ng-model="role.name" type="text" required/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <input class="form-control" ng-model="role.description" type="text"/>
+                                    </div>
+
+                                    <div class="form-group">
+
+                                    <div class="section">
+                                        <label>
+                                            Active &nbsp;
+                                            <input ng-checked="role.is_active" type="checkbox" ng-model="role.is_active"/>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a data-toggle="collapse" data-target="#assign-users-body">
+                        <h4 class="panel-title">Users</h4>
+                    </a>
+                </div>
+                <div id="assign-users-body" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <label>Users Assigned to this Role.</label>
+
+                    </div>
+                    <div style="border-top: 1px solid #ddd" class="limit-list">
+                        <table class="table table-hover table-striped table-bordered">
+
+                            <tr ng-repeat="user in AllUsers.record" id="row_{{user.id}}">
+                                <td><input ng-model="user.inRole"
+                                           ng-change="updateUserToRole()"
+                                           ng-checked="isUserInRole()" type="checkbox"/></td>
+                                <td style="width:100%">{{user.display_name}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a data-toggle="collapse" data-target="#assign-apps-body">
+                        <h4 class="panel-title">Apps</h4>
+                    </a>
+                </div>
+                <div id="assign-apps-body" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <label>Apps Assigned to this Role.&nbsp;&nbsp;&nbsp;<a><i class="fa fa-star"></i></a> = Set this app to auto load
+                            when users of this role log in.</label>
+
+                        <div class="alert alert-info">
+                            <li class="fa fa-info-circle fa-fw"></li>
+                            Each user who is assigned to this role will have access to the selected apps.
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px solid #ddd;" class="limit-list">
+                        <table class="table table-hover table-striped table-bordered">
+
+                            <tr ng-repeat="app in Apps.record" id="row_{{app.id}}">
+                                <td><a style="color:#b3b3b3" ng-click="makeDefault()" ng-show="app.id != role.default_app_id"><i
+                                        class="fa fa-star"></i></a>
+                                    <a ng-click="clearDefault()" ng-show="app.id == role.default_app_id"><i class="fa fa-star"></i></a>
+                                </td>
+                                <td><input ng-model="app.inRole"
+                                           ng-change="addAppToRole()"
+                                           ng-checked="isAppInRole()" type="checkbox"/></td>
+                                <td style="width:100%">{{app.name}}</td>
+
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a data-toggle="collapse" data-target="#assign-service-access-body">
+                        <h4 class="panel-title">Service Access</h4>
+                    </a>
+                </div>
+                <div id="assign-service-access-body" class="panel-collapse collapse">
+                    <div class="panel-body">
+
+                        <label>Assign Service Access to this Role</label>
+
+                        <hr />
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="col-xs-3">
+                                    <label>Service</label>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Component</label>
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>Access</label>
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>Requestors</label>
+                                </div>
+                                <div class="col-xs-1">
+                                    <label>Filters</label>
+                                </div>
+                                <div class="col-xs-1" >
+                                    <label>
+                                        <button class="btn btn-default btn-sm" data-ng-click="newServiceAccess()">
+                                            <i class="fa fa-plus fa-fw"></i>
+                                        </button>
+                                    </label>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul class="list-group">
+                            <li class="list-group-item" data-ng-repeat="service_access in role.role_service_accesses">
+                                <div class="row">
+                                    <div class="col-xs-3 form-group">
+                                        <select class="form-control input-sm"
+                                                data-ng-change="selectService()"
+                                                data-ng-model="service_access.service_id"
+                                                data-ng-options="service.id as service.name for service in Services.record">
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-3 form-group">
+                                        <select class="form-control input-sm"
+                                                data-ng-model="service_access.component"
+                                                data-ng-options="component as component for component in ServiceComponents[serviceId2Index(service_access.service_id)]">
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-2 form-group">
+                                        <df-verb-picker data-allowed-verb-mask="service_access.verb_mask"></df-verb-picker>
+                                    </div>
+                                    <div class="col-xs-2 form-group">
+                                        <df-requestor-picker data-allowed-requestor-mask="service_access.requestor_mask"></df-requestor-picker>
+                                    </div>
+                                    <div class="col-xs-1 form-group">
+                                        <div class="filter-control">
+                                        <span data-ng-show="allowFilters(service_access.service_id)">
+                                            <a href="" data-ng-click="toggleServiceAccessFilter()">{{service_access.filters.length}}</a>
+                                        </span>
+                                            <span data-ng-show="!allowFilters(service_access.service_id)">N/A</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-1 form-group">
+                                        <button type="button" class="btn btn-default btn-sm" data-ng-click="removeServiceAccess()">
+                                            <i class="fa fa-trash-o fa-fw"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row" data-ng-show="allowFilters(service_access.service_id) && service_access.show_filters">
+                                    <div class="col-xs-12">
+                                        <hr />
+                                        <div class="alert alert-info"
+                                             ng-show="allowFilters(service_access.service_id) && service_access.show_filters && service_access.filters.length>0">
+                                            <i class="fa fa-info-circle fa-fw"></i>
+                                            String values should be single or double quoted.
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-xs-3">
+                                                <label>Field</label>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <label>Operator</label>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <label>Value</label>
+                                            </div>
+                                            <div class="col-xs-2">
+
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <button type="button" class="btn btn-default btn-sm" data-ng-click="newServiceAccessFilter()">
+                                                    <i class="fa fa-plus fa-fw"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div data-ng-repeat="service_access_filter in service_access.filters" class="row" style="margin-top: 15px;">
+                                            <div class="col-xs-3 form-group">
+                                                <input class="form-control input-sm" data-ng-model="service_access_filter.name" type="text" />
+                                            </div>
+                                            <div class="col-xs-3 form-group">
+                                                <select class="form-control input-sm"
+                                                        data-ng-change="updateServiceAccessFilter()"
+                                                        data-ng-model="service_access_filter.operator"
+                                                        data-ng-options="op as op for op in FilterOps">
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3 form-group">
+                                                <input class="form-control input-sm" data-ng-model="service_access_filter.value"
+                                                       data-ng-disabled="service_access_filter.operator==='is null' || service_access_filter.operator==='is not null'"
+                                                       type="text"/>
+                                            </div>
+
+                                            <div class="col-xs-2 form-group">
+                                                <a href="" style="font-weight:bold;"
+                                                   data-ng-click="toggleServiceAccessOp()"
+                                                   data-ng-show="!$last">
+                                                    {{service_access.filter_op}}
+                                                </a>
+                                            </div>
+
+                                            <div class="col-xs-1 form-group">
+                                                <button type="button" class="btn btn-default btn-sm" data-ng-click="removeServiceAccessFilter()">
+                                                    <i class="fa fa-trash-o fa-fw"></i>
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <p ng-show="role.role_service_accesses.length==0">
+                            No service access for this role. Click the add button to grant/deny access.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a data-toggle="collapse" data-target="#assign-system-access-body">
+                        <h4 class="panel-title">System Access</h4>
+                    </a>
+                </div>
+                <div id="assign-system-access-body" class="panel-collapse collapse">
+                    <div class="panel-body">
+
+                        <label>Assign System Access to this Role</label>
+
+                        <hr />
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="col-xs-4">
+                                    <label>Component</label>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Access</label>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Requestors</label>
+                                </div>
+                                <div class="col-xs-1">
+                                    <label>Filters</label>
+                                </div>
+
+                                <div class="col-xs-1" >
+                                    <label>
+                                        <button class="btn btn-default btn-sm" data-ng-click="newSystemAccess()">
+                                            <i class="fa fa-plus fa-fw"></i>
+                                        </button>
+                                    </label>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul class="list-group">
+                            <li class="list-group-item" data-ng-repeat="system_access in role.role_system_accesses">
+                                <div class="row">
+                                    <div class="col-xs-4 form-group">
+                                        <select class="form-control input-sm"
+                                                data-ng-model="system_access.component"
+                                                data-ng-options="component.name as component.label for component in SystemComponents">
+                                        </select>
+
+                                    </div>
+                                    <div class="col-xs-3 form-group">
+                                        <df-verb-picker data-allowed-verb-mask="system_access.verb_mask"></df-verb-picker>
+                                    </div>
+
+                                    <div class="col-xs-3 form-group">
+                                        <df-requestor-picker data-allowed-requestor-mask="system_access.requestor_mask"></df-requestor-picker>
+                                    </div>
+
+                                    <div class="col-xs-1 form-group">
+                                        <div class="filter-control" >
+                                            <span>
+                                                <a href="" data-ng-click="toggleSystemAccessFilter()">{{system_access.filters.length}}</a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-1 form-group">
+                                        <button type="button" class="btn btn-default btn-sm" data-ng-click="removeSystemAccess()">
+                                            <i class="fa fa-trash-o fa-fw"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+
+                                <div class="row" data-ng-show="system_access.show_filters">
+                                    <div class="col-xs-12">
+
+                                        <hr />
+
+                                        <div class="alert alert-info" data-ng-show="system_access.show_filters && system_access.filters.length>0">
+                                            <i class="fa fa-info-circle fa-fw"></i>
+                                            String values should be single or double quoted.
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-xs-3">
+                                                <label>Field</label>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <label>Operator</label>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <label>Value</label>
+                                            </div>
+                                            <div class="col-xs-2">
+
+                                            </div>
+                                            <div class="col-xs-1">
+                                                <button type="button" class="btn btn-default btn-sm" data-ng-click="newSystemAccessFilter()">
+                                                    <i class="fa fa-plus fa-fw"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div data-ng-repeat="system_access_filter in system_access.filters" class="row" style="margin-top: 15px;">
+                                            <div class="col-xs-3 form-group">
+                                                <input class="form-control input-sm" data-ng-model="system_access_filter.name" type="text" />
+                                            </div>
+                                            <div class="col-xs-3 form-group">
+                                                <select class="form-control input-sm"
+                                                        data-ng-change="updateSystemAccessFilter()"
+                                                        data-ng-model="system_access_filter.operator"
+                                                        data-ng-options="op as op for op in FilterOps">
+                                                </select>
+                                            </div>
+                                            <div class="col-xs-3 form-group">
+                                                <input class="form-control input-sm" data-ng-model="system_access_filter.value"
+                                                       data-ng-disabled="system_access_filter.operator==='is null' || system_access_filter.operator==='is not null'"
+                                                       type="text"/>
+                                            </div>
+
+                                            <div class="col-xs-2 form-group">
+                                                <a href="" style="font-weight:bold;"
+                                                   data-ng-click="toggleSystemAccessOp()"
+                                                   data-ng-show="!$last">
+                                                    {{system_access.filter_op}}
+                                                </a>
+                                            </div>
+
+                                            <div class="col-xs-1 form-group">
+                                                <button type="button" class="btn btn-default btn-sm" data-ng-click="removeSystemAccessFilter()">
+                                                    <i class="fa fa-trash-o fa-fw"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <p data-ng-show="role.role_system_accesses.length==0">
+                            No system access for this role. Click the add button to grant/deny access.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a data-toggle="collapse" data-target="#assign-lookup-keys-body">
+                        <h4 class="panel-title">Role Lookup Keys</h4>
+                    </a>
+                </div>
+                <div id="assign-lookup-keys-body" class="panel-collapse collapse">
+                    <div class="panel-body">
+
+                        <div class="alert alert-info">
+                            <li class="fa fa-fw fa-info-circle"></li>
+                            Lookup keys for service configuration and credentials must be made private.
+                        </div>
+                        <table class="table table-hover table-striped field-list">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Value</th>
+                                <th>Private</th>
+
+                                <th class="no-border">
+                                    <div class="btn-group pull-left">
+                                        <button class="btn btn-default btn-sm" data-ng-click="newKey()">
+                                            <i class="fa fa-plus fa-fw"></i>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+
+                            <tr data-ng-repeat="key in role.lookup_keys">
+                                <td>
+                                    <input class="form-control" data-ng-model="key.name" type="text" />
+                                </td>
+                                <td>
+                                    <input class="form-control" data-ng-model="key.value" type="text" />
+                                </td>
+                                <td style="padding-left: 25px; padding-top: 13px;">
+                                    <input  data-ng-model="key.private" type="checkbox" />
+                                </td>
+                                <td class="no-border">
+                                    <div class="btn-group pull-left">
+                                        <button type="button" class="btn btn-sm btn-default" data-ng-click="removeKey()">
+                                            <i class="fa fa-trash-o fa-fw"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <p ng-show="role.lookup_keys.length===0">
+                            No lookup keys for this role. Click the plus button to add.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Small devices -->
+            <div class="visible-xs visible-sm" data-ng-class="xsWidth ? 'df-col-padding-override' : ''">
+                <div class="well well-sm">
+                    <div class="btn-toolbar">
+                        <div class="btn-group pull-right" style="margin: 4px auto">
+                            <button type="button" class="btn btn-default btn-sm" data-ng-click="promptForNew()">Create New</button>
+                            <button data-ng-show="activeView === 'form'" type="button" class="btn btn-default btn-sm save_button" data-ng-click="create()">Save</button>
+                            <button data-ng-show="activeView === 'form'" type="button" class="btn btn-default btn-sm update_button" data-ng-click="save()">Update</button>
+                            <button data-ng-show="xsWidth && activeView === 'form'" type="button" class="btn btn-default btn-sm" data-ng-click="close()">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Everything larger than 'sm' -->
+            <div class="well well-sm hidden-xs hidden-sm">
+                <div class="btn-toolbar">
+                    <div class="btn-group pull-right">
+                        <button type="button" class="btn btn-default btn-sm" data-ng-click="promptForNew()">Create New</button>
+                        <button type="button" class="btn btn-default btn-sm save_button" data-ng-click="create()">Save</button>
+                        <button type="button" class="btn btn-default btn-sm update_button" data-ng-click="save()">Update</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

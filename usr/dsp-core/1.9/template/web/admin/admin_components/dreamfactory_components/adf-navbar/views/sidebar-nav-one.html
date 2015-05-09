@@ -1,0 +1,12 @@
+<div class="list-group">
+	<a class="list-group-item"
+		style="cursor: default"
+		data-ng-repeat="link in links"
+		data-ng-if="link.active"
+		data-ng-click="navigateTo(link)"
+		data-ng-class="currentPage.name === link.name ? 'active' : null">
+		<div class="hidden-xs hidden-sm">
+			<i class="{{link.icon}} fa-fw" data-ng-class=""></i> <span>&nbsp;{{link.label}}</span>
+		</div>
+	</a>
+</div>

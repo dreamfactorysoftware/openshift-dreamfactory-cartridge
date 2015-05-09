@@ -1,0 +1,1 @@
+The use of an .htaccess file in production is discouraged. Please see the files in /docs/apache for more information about an excellent alternative.

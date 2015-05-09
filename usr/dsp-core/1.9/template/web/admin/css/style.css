@@ -1,0 +1,656 @@
+/**
+ * This file is part of the DreamFactory Services Platform(tm) (DSP)
+ *
+ * DreamFactory Services Platform(tm) <http://github.com/dreamfactorysoftware/dsp-core>
+ * Copyright 2012-2014 DreamFactory Software, Inc. <support@dreamfactory.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+@import url(//fonts.googleapis.com/css?family=Lato|Open+Sans);
+
+html, body {
+	height:      100%;
+	overflow-x:  hidden;
+	font-family: 'Lato', 'Open Sans', 'Helvetica Neue Light', 'Arial', sans-serif;
+}
+
+p {
+	font-family: 'Open Sans', 'Helvetica Neue Light', 'Arial', sans-serif;
+}
+
+.app-wrapper {
+	padding: 0;
+	margin:  8px 10px 8px 8px;
+}
+
+#app-details {
+	vertical-align: top;
+	border:         0;
+	width:          100%;
+}
+
+#parameter-grid {
+	height:       200px;
+	margin-right: 10px;
+	margin-top:   30px;
+	width:        400px;
+
+}
+
+.ngCell {
+	height: 40px !important;
+
+}
+
+#header-grid {
+	height:       200px;
+	margin-right: 10px;
+	margin-top:   30px;
+	width:        400px;
+
+}
+
+.access {
+	display: inline-block;
+	width:   80px;
+}
+
+.lead {
+	margin-bottom: 15px;
+	font-family:   'Lato', 'Open Sans', sans-serif;
+	font-weight:   300;
+}
+
+.limit-list {
+	max-height: 200px;
+	overflow:   auto;
+}
+
+.limit-big-list {
+	max-height: 400px;
+	overflow:   auto;
+}
+
+.filter-control {
+	display:      inline-block;
+	padding-left: 5px;
+}
+
+.field-list td {
+	padding-bottom: 0;
+}
+
+.ie-width-fix {
+	margin:      0;
+	padding:     0;
+	line-height: 1;
+	height:      1px;
+}
+
+.ngCell div {
+	height: 100%;
+}
+
+#cors-list label {
+	display:   inline-block;
+	font-size: 9px;
+	position:  relative;
+	bottom:    4px;
+	margin:    3px;
+}
+
+#cors-list {
+	max-height: 300px;
+	overflow:   auto;
+}
+
+.cors-list label {
+	display:   inline-block;
+	font-size: 9px;
+	position:  relative;
+	bottom:    4px;
+	margin:    3px;
+}
+
+.cors-list {
+	max-height: 300px;
+	overflow:   auto;
+}
+
+#root-file-manager {
+	height:         0;
+	margin-left:    10px;
+	overflow:       auto;
+	padding-bottom: 100%;
+	padding-top:    30px;
+	position:       relative;
+	width:          100%;
+}
+
+#swagger, #docs {
+	margin-left:      10px;
+	background-color: white;
+	position:         relative;
+	padding-bottom:   65.25%;
+	padding-top:      30px;
+	height:           0;
+	/*overflow:         auto;*/
+}
+
+#login-page {
+	height:         100%;
+	left:           0;
+	overflow:       auto;
+	padding-bottom: 65.25%;
+	padding-top:    30px;
+	position:       absolute;
+	top:            -50px;
+	width:          100%;
+	z-index:        999999;
+}
+
+#swaggerFrame, #docsFrame, #login-frame, #root-file-manager iframe {
+	position: absolute;
+	top:      0;
+	left:     15px;
+	width:    100%;
+	height:   90%;
+}
+
+#event-listing {
+
+}
+
+#event-listing ul {
+	list-style:    none;
+	margin-bottom: 0;
+}
+
+#editor {
+	height: 400px;
+	/*left:        300px;*/
+	/*margin-left: 2px;*/
+	/*margin-top:  -1px;*/
+	/*position:    absolute;*/
+	/*right:       22px;*/
+	/*width:       auto;*/
+}
+
+#event-container td {
+	vertical-align: top;
+}
+
+.event-name {
+	padding:          5px;
+	background-color: #FFFFFF;
+	border:           1px solid #DDDDDD;
+	font-weight:      bold;
+	font-size:        1.1em;
+	cursor:           pointer;
+	margin-bottom:    -1px;
+}
+
+.event-list {
+	margin-right: 5px;
+
+}
+
+.path-name {
+	padding:          5px;
+	background-color: #FFFFFF;
+	border:           1px solid #DDDDDD;
+	cursor:           pointer;
+	margin-bottom:    -1px;
+}
+
+.path-verb {
+	padding:          0;
+	background-color: #FFFFFF;
+	border:           1px solid #DDDDDD;
+	margin-bottom:    -1px;
+
+	cursor:           pointer;
+}
+
+.search-box {
+	padding:   5px;
+	font-size: .9em;
+	color:     #787878;
+}
+
+#script-name {
+	background:   none repeat scroll 0 0 #333333;
+	color:        #F9F9F9;
+	cursor:       pointer;
+	height:       50px;
+	padding-left: 20px;
+	padding-top:  10px;
+	width:        98%;
+}
+
+.high-name {
+	color: #e67e22;
+}
+
+#sample-events {
+	display:      inline-block;
+	float:        right;
+	margin-right: 10px;
+
+}
+
+#master-list {
+	list-style: none;
+	display:    inline;
+}
+
+#resource-container td {
+	vertical-align: top;
+	padding:        10px;
+}
+
+#resource-list {
+	width: 300px;
+}
+
+.resource-name {
+	width:   160px;
+	display: inline-block;
+
+}
+
+.script-id {
+	background-color: #ffffff;
+	display:          inline-block;
+	margin:           0;
+	padding:          3px;
+	width:            100%;
+}
+
+.active-script {
+	background-color: #428BCA;
+	border-color:     #428BCA;
+	color:            #FFFFFF;
+	display:          inline-block;
+	margin:           0;
+	padding:          3px;
+	width:            100%;
+}
+
+.user-name {
+	display:       inline-block;
+	overflow:      hidden;
+	text-overflow: ellipsis;
+	white-space:   nowrap;
+}
+
+.table-name {
+	display:       inline-block;
+	overflow:      hidden;
+	text-overflow: ellipsis;
+	white-space:   nowrap;
+	width:         200px;
+}
+
+*, .active > a:focus {
+	outline: medium none !important;
+}
+
+#main-content {
+	padding-left: 0;
+}
+
+#app-buttons {
+	display:       inline-block;
+	margin-bottom: 5px;
+}
+
+.resource-header {
+	padding-bottom: 16px;
+}
+
+.user-buttons {
+	display:       inline-block;
+	float:         right;
+	margin-bottom: 3px;
+}
+
+#resource-list .active {
+	background-color: #428BCA;
+	color:            #FFFFFF;
+}
+
+#config-form {
+	padding: 10px;
+}
+
+#config-form {
+	padding: 10px;
+}
+
+#schema-list {
+	width: 300px;
+}
+
+h2.panel-title {
+	font-size:   22px;
+	font-weight: bold;
+}
+
+h3.panel-title {
+	font-size:   20px;
+	font-weight: bold;
+}
+
+#schema-list accordion {
+	display: inline-block;
+	width:   330px;
+}
+
+.list-group-item {
+	padding: 8px 12px;
+}
+
+.alert > i.fa {
+	vertical-align: middle;
+}
+
+.list-group-item > i.fa, .alert > i.fa {
+	min-width:    14px;
+	margin-right: 8px;
+	opacity:      0.8;
+	transition:   opacity 0.3s;
+}
+
+a.list-group-item:hover > i.fa, .alert:hover > i.fa {
+	opacity:    1;
+	transition: opacity 0.3s;
+}
+
+.radio {
+	font-size: 16px;
+}
+
+.radio > label > i.fa, .form-group > a > i.fa {
+	margin-left:  4px;
+	margin-right: 4px;
+	opacity:      0.8;
+	transition:   opacity 0.3s;
+}
+
+.radio > label > i.fa:hover, .form-group > a > i.fa:hover {
+	opacity:    1;
+	transition: opacity 0.3s;
+}
+
+#schema-editor {
+	height: 300px;
+	width:  100%;
+}
+
+.affix {
+	position: static;
+	top:      20px !important;
+}
+
+.affix-top {
+	position: fixed;
+	top:      20px !important;
+}
+
+.affix-bottom {
+	position: fixed;
+	bottom:   0;
+	top:      auto;
+}
+
+.divider:before {
+	content: "/\00a0";
+	padding: 0 0 0 4px;
+	color:   #ccc;
+}
+
+.table-listing {
+	max-height: 300px;
+	width:      310px;
+	overflow-x: hidden;
+}
+
+.df-list-group .bg-primary {
+
+	background-color: #428bca !important;
+}
+
+.df-col-padding-override {
+
+	padding: 0 !important;
+}
+
+.list-group-item {
+	cursor: default;
+}
+
+.panel-heading {
+	cursor: pointer;
+}
+
+@media (max-width: 991px) {
+	.sidebar .list-group-item {
+		width:    32px;
+		height:   32px;
+		overflow: hidden;
+		padding:  2px 0;
+	}
+
+	.sidebar .list-group-item a {
+		padding-left:  0;
+		padding-right: 0;
+		white-space:   nowrap;
+		width:         100%;
+	}
+
+	.sidebar .list-group-item > i.fa {
+		margin:     0 100px 0 0;
+		font-size:  22px;
+		padding:    3px 0;
+		text-align: center;
+		width:      100%;
+		overflow:   hidden;
+	}
+}
+
+.accordion-toggle {
+	cursor: pointer;
+}
+
+label.error {
+	margin-top: 5px;
+	color:      darkred;
+}
+
+.has-feedback .form-control-feedback {
+	top:   0;
+	right: 15px;
+}
+
+.navbar-dropdown {
+	margin-top: -6px;
+}
+
+/*.btn-group-nav > .btn {*/
+/*font-family: "Open Sans", "Lato", Arial, sans-serif;*/
+/*}*/
+
+.btn-group-nav > .btn-md,
+.btn-group-nav.btn-group-md > .btn,
+.btn-group-nav > .dropdown-menu,
+.btn-group-nav > .btn {
+	font-size: 13px;
+}
+
+.btn-group-nav > .btn-sm,
+.btn-group-nav > .btn-xs,
+.btn-group-nav.btn-group-sm > .btn,
+.btn-group-nav.btn-group-xs > .btn,
+.btn-group-nav > .dropdown-menu {
+	font-size: 13px;
+}
+
+.btn-group-nav > .btn > i.fa {
+	margin-right: 8px;
+}
+
+.btn-group-nav.btn-group-sm > .btn > i.fa {
+	margin-right: 6px;
+}
+
+.btn-group-nav.btn-group-xs > .btn > i.fa {
+	margin-right: 4px;
+}
+
+.btn-group-nav > .btn > i.fa.fa-caret-down {
+	margin-right: 0;
+	margin-left:  4px;
+}
+
+.dropdown .dropdown-menu li a {
+	padding: 3px 20px 3px 10px;
+}
+
+.dropdown .dropdown-menu li > a > i[class^="icon-"],
+.dropdown .dropdown-menu li > a > i.fa {
+	margin-left:  0;
+	margin-right: 8px;
+	font-size:    1.3em;
+	color:        #428bca;
+	opacity:      0.5;
+	transition:   0.3s;
+}
+
+.dropdown .dropdown-menu li > a > img[class^="icon-"] {
+	height:         18px;
+	vertical-align: top;
+	margin:         0 8px 0 -1px;
+	opacity:        0.5;
+	transition:     0.3s;
+}
+
+.dropdown .dropdown-menu li > a:hover img[class^="icon-"],
+.dropdown .dropdown-menu li > a > img[class^="icon-"]:hover,
+.dropdown .dropdown-menu li > a:hover > i[class^="icon-"],
+.dropdown .dropdown-menu li > a > i[class^="icon-"]:hover,
+.dropdown .dropdown-menu li > a:hover > i.fa,
+.dropdown .dropdown-menu li > a > i.fa:hover {
+	opacity:    1.0;
+	transition: 0.3s;
+}
+
+/** maximize space for main content by trimming padding left. */
+#angular-content > div.navbar.navbar-default.ng-scope {
+	margin-bottom: 8px;
+}
+
+#main-content > .navbar.navbar-default {
+	margin-bottom: 10px;
+}
+
+.no-left-padding {
+	padding-left: 0;
+}
+
+.no-right-padding {
+	padding-right: 0;
+}
+
+.ng-scope > .panel.panel-default {
+	margin-bottom: 10px;
+}
+
+.list-group.list-group-sm {
+	font-size: 11px;
+}
+
+.navbar.navbar-default.bg-info {
+	/*background-color: #d9edf7;*/
+	/*border-color:     #e8dce6;*/
+}
+
+.navbar-default.bg-info .navbar-brand,
+.navbar-default.bt-info .navbar-brand {
+	color: rgba(0, 0, 0, .8);
+}
+
+.navbar-default.bg-info .navbar-brand:hover,
+.navbar-default.bt-info .navbar-brand:focus {
+	color:            rgba(0, 0, 0, 1);
+	background-color: transparent;
+}
+
+.well.well-sm .btn-toolbar.pull-right {
+	margin-top: 4px;
+}
+
+/**************************************************************************
+** Loading screen
+**************************************************************************/
+
+.loading-screen {
+	background-color: rgba(0, 0, 0, .75);
+	color:            rgba(255, 255, 255, 1);
+	z-index:          99998;
+	position:         absolute;
+	top:              0;
+	left:             0;
+	bottom:           0;
+	right:            0;
+	overflow:         hidden;
+	height:           100%;
+	width:            100%;
+	padding-top:      8px;
+}
+
+.loading-screen.active {
+	z-index:          99999;
+	display:          block;
+	background-color: rgba(0, 0, 0, .75);
+	cursor:           wait;
+}
+
+.loading-screen-body {
+	margin:     15% auto 0;
+	text-align: center;
+}
+
+.loading-screen-body h2 {
+	font-weight: bold;
+	font-size:   36px;
+	color:       #ffffff;
+	padding:     0;
+	margin:      0;
+}
+
+.loading-screen-body h2 i.fa {
+	display:      inline;
+	margin-right: 10px;
+}
+.column-listing .panel-heading {
+   padding:0px;
+}
+.column-listing .column-name{
+    padding:10px 15px;
+    width:95%;
+}
+.delete-column{
+    float:right;
+    margin:7px;
+}

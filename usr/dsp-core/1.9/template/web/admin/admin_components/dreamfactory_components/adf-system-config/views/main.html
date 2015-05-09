@@ -1,0 +1,45 @@
+<nav class="navbar navbar-default bg-info" role="navigation">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#admin-app-apps">
+				<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">System Configuration</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="admin-app-apps">
+			<div class="nav navbar-nav navbar-right">
+				<div class="btn-group btn-group-nav">
+					<div data-ng-include="'_downloads.html'"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</nav>
+
+<form name="systemConfigForm" data-ng-submit="updateConfig()">
+	<div class="well well-sm">
+		<div class="btn-toolbar">
+			<div class="btn-group pull-right">
+				<button type="submit" class="btn btn-default btn-sm">Save</button>
+			</div>
+		</div>
+	</div>
+
+	<dreamfactory-system-info></dreamfactory-system-info>
+	<dreamfactory-cors-config></dreamfactory-cors-config>
+	<dreamfactory-guest-users-config></dreamfactory-guest-users-config>
+	<dreamfactory-open-registration-config></dreamfactory-open-registration-config>
+	<dreamfactory-user-invites-config></dreamfactory-user-invites-config>
+	<dreamfactory-password-reset-config></dreamfactory-password-reset-config>
+	<dreamfactory-email-templates></dreamfactory-email-templates>
+	<dreamfactory-global-lookup-keys-config></dreamfactory-global-lookup-keys-config>
+
+	<div class="well well-sm">
+		<div class="btn-toolbar">
+			<div class="btn-group pull-right">
+				<button type="submit" class="btn btn-default btn-sm">Save</button>
+			</div>
+		</div>
+	</div>
+</form>

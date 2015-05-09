@@ -1,0 +1,20 @@
+# Auto detect text files and perform LF normalization
+*        text=auto
+
+*.php    text diff=php
+*.html   text diff=html
+*.xml    text
+*.md	 text
+*.css    text
+*.js     text
+*.json   text
+*.lock   text
+*.sql    text
+
+# Denote all files that are truly binary and should not be modified.
+*.png	binary
+*.jpg	binary
+*.jpeg	binary
+*.ico	binary
+*.gif	binary
+*.phar	binary

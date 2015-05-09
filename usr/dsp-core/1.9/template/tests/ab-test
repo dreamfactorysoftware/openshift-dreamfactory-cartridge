@@ -1,0 +1,20 @@
+#!/bin/bash
+
+URL="http://jablan.cloud.dreamfactory.com/rest/system/config?app_name=admin"
+ITERATIONS=120 
+CONCURRENT=4
+VERBOSITY=""
+
+if [ "$1" != "" ] ; then
+	ab -n ${ITERATIONS} -c ${CONCURRENT} ${VERBOSITY} \
+	    -H "Cookie: PHPSESSID=${1}" \
+	    -H "Cache-Control: no-cache" \
+	    -H "Content-Type: application/json" \
+	    ${URL}
+else
+	ab -n ${ITERATIONS} -c ${CONCURRENT} ${VERBOSITY} \
+	    -H "Connection: close" \
+	    -H "Cache-Control: no-cache" \
+	    -H "Content-Type: application/json" \
+	    ${URL}
+fi

@@ -1,0 +1,75 @@
+/**
+ * This is a spotlight class you can add to your text.
+ */
+.is-awesome {
+	font-family:   "Droid Sans", "Open Sans", "Lato", Arial, sans-serif;
+	color:         rgba(255, 255, 255, 0.15);
+	font-size:     2em;
+	margin-top:    8px;
+	font-weight:   bolder;
+	background:    transparent bottom left;
+	transition:    background-position;
+	cursor:        help;
+	padding-right: 50px;
+	padding-left:  50px;
+}
+
+.is-awesome:hover {
+	background:                        #111 -webkit-gradient(linear, left top, right top, from(#111), to(#111), color-stop(0.5, #fff)) 0 0 no-repeat;
+	color:                             rgba(1, 1, 1, 0.25);
+	-webkit-background-size:           150px;
+	-webkit-background-clip:           text;
+	-webkit-animation-name:            spotlight;
+	-webkit-animation-duration:        2500ms;
+	-webkit-animation-iteration-count: infinite;
+	transition:                        background-position;
+}
+
+@-webkit-keyframes spotlight {
+	0% {
+		background-position: top left;
+	}
+	50% {
+		background-position: top right;
+	}
+	100% {
+		background-position: top left;
+	}
+}
+
+@-moz-keyframes spotlight {
+	0% {
+		background-position: top left;
+	}
+	50% {
+		background-position: top right;
+	}
+	100% {
+		background-position: top left;
+	}
+}
+
+@-o-keyframes spotlight {
+	0% {
+		background-position: top left;
+	}
+	50% {
+		background-position: top right;
+	}
+	100% {
+		background-position: top left;
+	}
+}
+
+@keyframes spotlight {
+	0% {
+		background-position: top left;
+	}
+	50% {
+		background-position: top right;
+	}
+	100% {
+		background-position: top left;
+	}
+}
+

@@ -1,0 +1,28 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a data-toggle="collapse" data-target="#user-invites-config-body">
+            <h4 class="panel-title">User Invites</h4>
+        </a>
+    </div>
+
+    <div class="panel-collapse collapse" id="user-invites-config-body">
+        <div class="panel-body">
+            <div class="form-group">
+                <label>Select an email service for user invites</label>
+                <select class="form-control" data-ng-model="systemConfig.invite_email_service_id"
+                        data-ng-options="service.id as service.name for service in servicesDataObj | filter:service.type='Email Service'">
+                    <option value="">- - None - -</option>
+                </select>
+
+            </div>
+
+            <div class="form-group">
+                <label>Optionally select an email template for user invites</label>
+                <select class="form-control" data-ng-model="systemConfig.invite_email_template_id"
+                        data-ng-options="emailTemplate.id as emailTemplate.name for emailTemplate in emailTemplatesDataObj">
+                    <option value="">- - None - -</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,342 @@
+<nav class="navbar navbar-default bg-info" role="navigation">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#admin-app-apps">
+				<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+			</button>
+			<span class="navbar-brand">Schema Manager</span>
+		</div>
+	</div>
+</nav>
+
+<table id="resource-container">
+<tr>
+<td id="schema-list">
+
+	<accordion style="height:100%" close-others=true dreamfactory-auto-height auto-height-parent="window" auto-height-padding="0">
+
+		<accordion-group style="cursor:pointer" data-ng-click="setService()" ng-repeat="service in dbServices">
+			<accordion-heading>
+                <span class="pull-right"><button title="Clear cache & reload schema" data-ng-click="reloadService();$event.stopPropagation();" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button></span>
+				{{service.api_name}}<br />
+				<small>{{service.description}}&nbsp;</small>
+			</accordion-heading>
+			<div class="form-inline">
+				<input type="text" class="form-control" placeholder="New table name" data-ng-model="newTableName" />
+				<button ng-click="createTable()" class="btn btn-default">
+					Create
+				</button>
+			</div>
+			<br />
+
+			<div class="table-listing">
+
+				<ul id="resource-list" class="list-group">
+					<li data-ng-class="table.name === currentTable ? 'active' : ''" data-ng-click="loadSchema()" class="list-group-item"
+						ng-repeat="table in service.tables">
+						<span class="table-name" title="{{table.name}}">{{table.name}}</span>
+            <span class="btn-group btn-group-sm pull-right">
+
+                <button class="btn btn-danger" title="Drop Table"
+					ng-click="dropTable();$event.stopPropagation();"><i
+					class="fa fa-trash-o"></i>
+				</button>
+            </span>
+
+					</li>
+				</ul>
+			</div>
+
+			<button ng-click="showImport()" class="btn btn-default">
+				<li class="fa fa-file-code-o"></li>
+				Import JSON Schema
+			</button>
+		</accordion-group>
+
+	</accordion>
+
+</td>
+
+<td>&nbsp;</td>
+<td id="app-details">
+<div data-ng-show="!service">
+    <div class="alert alert-info">
+        <i class="fa fa-fw fa-info-circle"></i>
+        Choose a DB service from the menu to the left. You can create new DB service (local or remote) in the Services section of this Admin Console.
+    </div>
+</div>
+<div data-ng-show="advanced">
+	<div class="btn-group">
+		<button class="btn btn-default" data-ng-if="table.schema && !import" data-ng-click="toggleJSON()">Table View</button>
+		<button data-ng-click="validateJSON()" class="btn btn-default">Validate</button>
+		<button class="btn btn-default" data-ng-if="!import" data-ng-click="updateJSONSchema()">Save Schema</button>
+		<button class="btn btn-default" data-ng-if="import" data-ng-click="postJSONSchema()">Post Schema</button>
+	</div>
+	<br /><br />
+
+	<div dreamfactory-auto-height auto-height-parent="window" auto-height-padding="0" auto-height-top="175px" id="schema-editor"></div>
+
+</div>
+<div data-ng-show="!advanced" class="column-listing">
+	<div class="btn-group">
+		<button class="btn btn-default" data-ng-show="table.schema" data-ng-click="toggleJSON()">JSON View</button>
+		<button class="btn btn-default" data-ng-show="table.schema" data-ng-click="addColumn()">Add Column</button>
+	</div>
+	<br /><br />
+	<accordion close-others=true>
+
+		<accordion-group  ng-repeat="column in table.schema.data.field" is-open="column.is_new">
+			<accordion-heading >
+                <span class="pull-right">
+                <button class="btn btn-xs btn-default delete-column" title="Delete Column"
+                        ng-click="deleteColumn();$event.stopPropagation();"><i
+                        class="fa fa-trash-o"></i>
+                </button>
+                </span>
+                <div class="column-name" data-ng-click="loadReferenceFields()">{{column.name}}</div>
+
+			</accordion-heading>
+			<div class="form-group">
+				<label>Name</label>
+				<input class="form-control" type="text" data-ng-model="column.name" />
+				<br />
+
+				<label>Label</label>
+				<input class="form-control" type="text" data-ng-model="column.label" />
+				<br />
+
+				<label>Type&nbsp;&nbsp;</label>
+				<span class="text-muted">This is a simplified DreamFactory Type</span>
+				<select data-ng-options="type.value as type.name for type in typeOptions" class="form-control" data-ng-model="column.type"></select> <br />
+
+				<label>Database Type</label>
+				<input class="form-control" data-ng-disabled = "column.type != ''" type="text" data-ng-model="column.db_type" />
+				<br />
+
+				<label>Length</label>
+				<input class="form-control" data-ng-disabled = "column.type === '' || (column.type != 'string' && column.type != 'integer')" type="text" data-ng-model="column.length" />
+				<br />
+
+                <label>Precision</label>
+                <input class="form-control" data-ng-disabled = "(column.type != 'decimal' && column.type != 'float' && column.type != 'double') || column.type === ''" type="text" data-ng-model="column.precision" />
+                <br />
+                <label>Scale</label>
+                <input class="form-control" data-ng-disabled = "(column.type != 'decimal' && column.type != 'float' && column.type != 'double') || column.type === ''" type="text" data-ng-model="column.scale" />
+                <br />
+                <label>Fixed Length</label>
+                <input type="checkbox" data-ng-disabled="column.type !== 'string' || column.type === ''" data-ng-model="column.fixed_length" />
+                <br />
+
+                <label>Supports Multibyte</label>
+                <input type="checkbox" data-ng-disabled="column.type !== 'string' || column.type === ''" data-ng-model="column.supports_multibyte" />
+                <br />
+                <label>Primary Key</label>
+				<input type="checkbox" data-ng-model="column.is_primary_key" />
+				<br />
+
+				<label>Foreign Key</label>
+				<input type="checkbox" data-ng-model="column.is_foreign_key" />
+				<br />
+                <label>Is Unique</label>
+                <input type="checkbox" data-ng-model="column.is_unique" />
+                <br />
+                <label>Is Index</label>
+                <input type="checkbox" data-ng-model="column.is_index" />
+                <br />
+
+				<label>Allow Null</label>
+				<input type="checkbox" data-ng-model="column.allow_null" />
+				<br />
+
+				<label>Auto Increment</label>
+				<input type="checkbox" data-ng-model="column.auto_increment" />
+				<br />
+
+				<br />
+
+				<label>Default Value</label>
+				<input class="form-control" type="text" data-ng-model="column.default" />
+				<br />
+
+
+				<label>Reference Table</label>
+				<select data-ng-disabled="column.type !== 'reference' && !column.is_foreign_key || (column.type === 'user_id' || column.type === 'user_id_on_create' || column.type === 'user_id_on_update')  "
+					class="form-control"
+					data-ng-change="loadReferenceFields()"
+					data-ng-model="column.ref_table"
+					data-ng-options="o.name as o.name for o in currentTables"> </select> <br />
+
+				<label>Reference Field</label>
+				<select
+					data-ng-disabled="!column.ref_table || (column.type === 'user_id' || column.type === 'user_id_on_create' || column.type === 'user_id_on_update') "
+					class="form-control"
+					data-ng-model="column.ref_fields"
+					data-ng-options="o.name as o.name for o in referenceFields"></select> <br />
+
+				<label>Required</label>
+				<input class="form-control" type="text" data-ng-disabled=true data-ng-model="column.required" />
+				<br />
+
+				<label>Validation</label>
+                <textarea  data-ng-model="column.validation"  class="form-control" rows="5" cols="10" >
+
+                </textarea>
+				<br />
+
+				<div data-ng-show="column.type === 'string' || column.type === 'integer'">
+					<label>Value</label>
+					&nbsp;&nbsp;<span class="text-muted">Enter a comma delimited list of values</span>
+
+					<input class="form-control" type="text" data-ng-model="column.value" />
+					<br />
+				</div>
+
+			</div>
+
+		</accordion-group>
+
+	</accordion>
+	<br />
+	<button class="btn btn-default" data-ng-show="table.schema" data-ng-click="updateSchema()">Save Schema</button>
+
+</div>
+
+<div>
+
+	<div id="create-form" data-ng-show="createBasic">
+		<div class="alert alert-info">
+			<li class="fa fa-info-circle"></li>
+			&nbsp;Propose table structure and click "Create Table" to save.
+		</div>
+		<div class="section">
+			<span>Table Name:</span>
+
+			<input id="table-name" type="text" ng-model="schema.table.name" />
+		</div>
+
+		<div class="alert alert-info">
+			<li class="fa fa-info-circle"></li>
+			&nbsp;Add fields
+		</div>
+
+		<div class="section">
+			<span>Field Name:</span>
+
+			<input ng-disabled="!schema.table.name" type="text"
+				ng-model="schema.table.field.name" />
+			<br /> <span>Field Type:</span><select ng-disabled="!schema.table.name || !schema.table.field.name"
+			ng-model="schema.table.field.type">
+			<option value="id">ID / Primary Key</option>
+			<option value="string">String</option>
+			<option value="integer">Integer</option>
+			<option value="text">Text</option>
+			<option value="boolean">Boolean</option>
+			<option value="binary">Binary</option>
+			<option value="float">Float</option>
+			<option value="decimal">Decimal</option>
+			<option value="datetime">Datetime</option>
+			<option value="date">Date</option>
+			<option value="time">Time</option>
+
+		</select> <br /> <span>Field Size:</span>
+
+			<input
+				ng-disabled="!schema.table.name || !schema.table.field.name || !schema.table.field.type"
+				type="text" ng-model="schema.table.field.size" />
+			<br /> <span>Allow Null:</span>
+
+			<input
+				ng-disabled="!schema.table.name || !schema.table.field.name || !schema.table.field.type"
+				type="checkbox" ng-model="schema.table.field.allow_null" />
+			<br />
+
+			<div>
+				<button ng-disabled="!schema.table.name || !schema.table.field.name || !schema.table.field.type"
+					class="btn btn-success" ng-click="addField()">
+					<li class="icon-plus-sign-alt"></li>
+					&nbsp;Add Field
+				</button>
+			</div>
+		</div>
+
+		<div id="fields_container"></div>
+		<table id="field-list" class="table table-hover table-striped">
+
+			<tbody>
+
+				<tr ng-repeat="field in newTable.table.field">
+					<td>{{field.name}}</td>
+					<td>{{field.type}}</td>
+					<td>{{field.size}}</td>
+					<td>{{field.allow_null}}</td>
+					<td class="no-border">
+						<div class="btn-group">
+
+							<button class="btn btn-default" ng-click="removeField()"><i
+								class="fa fa-trash-o"></i></button>
+
+						</div>
+					</td>
+				</tr>
+
+			</tbody>
+		</table>
+		<div>
+			<button ng-disabled="!newTable.table.field.length" class="btn btn-primary"
+				ng-click="create()">
+				<li class="icon-save"></li>
+				&nbsp;Create Table
+			</button>
+		</div>
+	</div>
+
+	<div id="json_upload" style="display:none;">
+		<style>
+			body {
+				font-family: sans-serif;
+			}
+
+			#result {
+				padding: 1em;
+			}
+
+			.pass {
+				background-color: #efe;
+				color:            #393;
+				border:           2px solid #393;
+			}
+
+			.fail {
+				background-color: #fee;
+				color:            #933;
+				border:           2px solid #933;
+			}
+
+			textarea {
+				width: 100%;
+			}
+		</style>
+
+		<div class="alert alert-info">Paste your JSON Schema below, Click Validate to use JSONlint before creating.
+		</div>
+
+		<textarea id="source" rows="20" cols="50"></textarea>
+
+		<div style="white-space: nowrap" class="form-inline">
+			<button ng-click="validateJSON()" id="button">Validate</button>
+			&nbsp;
+			<input type="checkbox" value="yes" id="reformat" />
+			<label for="reformat">Reformat JSON?</label>
+		</div>
+		<h2>Results</h2>
+		<pre id="result"></pre>
+		<p>
+			<button class="btn btn-primary" ng-click="postJSON()" class="icon-save"> Create Table(s)
+			</button>
+		</p>
+	</div>
+
+</div>
+</td>
+</tr>
+</table>

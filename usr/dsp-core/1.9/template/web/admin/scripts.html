@@ -1,0 +1,83 @@
+<div class="navbar navbar-default bg-info">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <div class="navbar-brand">Script Manager</div>
+        </div>
+
+        <div  data-ng-if="Config.is_private || !Config.is_hosted " class="nav navbar-nav navbar-right" style="margin:8px 0 0 0">
+            <div class="btn-group">
+                <button data-ng-disabled="!currentScript" data-ng-click="saveScript()" class="btn btn-default">
+                    Save
+                </button>
+                <button data-ng-disabled="!hasContent" data-ng-click="deleteScript()"
+                        class="btn btn-default">
+                    Delete
+                </button>
+                <button class="btn btn-default" id="sample-events" data-ng-click="showSamples()">
+                    View Samples
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <span data-ng-show="!currentScript">Please choose an event below.</span><span
+            data-ng-show="currentScript">&nbsp;Working on <span class="high-name">{{currentScript}}  <span
+            style="color:#27ae60">({{verb}} on /rest{{scriptPath}})</span></span></span>
+
+
+    </div>
+</div>
+<br/>
+<div class="row">
+    <div class="col-xs-12">
+        <div data-ng-if="!Config.is_private && Config.is_hosted">
+            <div style="width:750px" class="alert alert-info">
+                <li class="fa fa-info-circle"></li>
+                The Free Hosted Edition of the DreamFactory Services Platform does not support Server Side Scripting. Please install DreamFactory on your cloud or server for this capability. Click <a href="https://bitnami.com/stack/dreamfactory" target="df-new">here</a> to download the open source software package.
+            </div>
+        </div>
+        <div style="height:100%" id="event-wrapper" data-ng-if="Config.is_private || !Config.is_hosted " >
+            <div class="col-xs-4" style="padding:0">
+
+                <div>
+                    <div id="event-listing" >
+                        <div class="search-box"><input class="form-control" ng-model="searchText"
+                                                                   placeholder="Filter by Name"/></div>
+                        <div data-ng-repeat="event in Events | filter:searchText" class="event-list">
+                            <div class="event-name" data-ng-click="loadEvent()"><i
+                                    data-ng-class="event.name !== currentEvent ? 'icon-angle-down' : 'icon-angle-up'"> </i>{{event.name}}
+                            </div>
+                            <ul data-ng-if="event.name === currentEvent || searchText">
+                                <li data-ng-repeat="path in event.paths | filter:searchText" class="event-path"
+                                    data-ng-if="path.path.indexOf('{') == -1">
+                                    <div data-ng-click="loadPath()" data-ng-if="!searchText" class="path-name"><i
+                                            data-ng-class="path.path !== currentPath ? 'icon-angle-down' : 'icon-angle-up'"> </i>Path
+                                        :
+                                        {{path.path}}
+                                    </div>
+                                    <ul data-ng-if="path.path === currentPath || searchText">
+                                        <li data-ng-repeat="verb in path.verbs | filter:searchText"
+                                            class="path-verb">
+                                                                <span class="script-id" data-ng-repeat="event in verb.event track by $index | filter:searchText "
+                                                                      data-ng-click="loadScript()" data-ng-class="event === currentScript ? 'active-script' : ''">{{event}}<br/></span>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-xs-8" style="padding:0">
+                <div dreamfactory-auto-height auto-height-parent="window" auto-height-padding="0"
+                       auto-height-top="175px">
+                <div id="editor" style="height:100%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+

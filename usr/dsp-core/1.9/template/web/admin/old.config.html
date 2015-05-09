@@ -1,0 +1,430 @@
+<nav class="navbar navbar-default bg-info" role="navigation">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#admin-app-apps">
+				<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">System Configuration</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="admin-app-apps">
+			<div class="nav navbar-nav navbar-right">
+				<div class="btn-group btn-group-nav">
+					<div data-ng-include="'_downloads.html'"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</nav>
+
+<div class="panel panel-default">
+<div id="config-form">
+<div class="section versions text-primary">
+	<b>Database Version:</b>&nbsp;&nbsp;{{Config.db_version}}<br /> <b>DSP Version:</b>&nbsp;&nbsp;{{Config.dsp_version}}
+                    <span ng-show="Config.upgrade_available===false">
+                        &nbsp;(Up to date)
+                    </span>
+
+	<div ng-show="Config.upgrade_available===true">
+		DSP Version {{Config.latest_version}} is available!&nbsp;&nbsp;
+		<a href="https://github.com/dreamfactorysoftware/dsp-core/wiki/Product-Upgrades" target="_blank" class="btn btn-success">How To Upgrade</a>
+	</div>
+</div>
+<br />
+
+<div class="form-group">
+	<h3>CORS Access&nbsp;<br />
+		<small>Choose which hosts have cross domain access to your DSP</small>
+	</h3>
+	<br />
+	<button ng-click="promptForNew()" class="btn btn-success">
+		<li class="icon-add"></li>
+		Add New Host
+	</button>
+	<br /><br />
+
+	<table id="cors-list" class="table table-hover table-striped">
+
+		<tbody>
+			<tr>
+				<th></th>
+				<th>Host</th>
+				<th>Allowed Verbs</th>
+				<th>Enabled</th>
+
+			</tr>
+
+			<tr ng-repeat="host in Config.allowed_hosts">
+				<td>
+					<li ng-click="removeHost()" class="btn btn-danger icon-remove"></li>
+				</td>
+				<td>
+					<input class="form-control" placeholder="Enter Host Name" type="text" ng-model="host.host" />
+				</td>
+				<td>
+					<label>
+						<input ng-click="selectAll($event)" ng-checked="host.verbs.length == allVerbs.length"
+							type="checkbox" />
+						&nbsp;ALL</li></label>
+					<label ng-repeat="verb in allVerbs">
+						<input ng-click="toggleVerb()"
+							ng-disabled="host.verbs.length == allVerbs.length"
+							ng-checked="host.verbs.indexOf(verb) != -1 "
+							type="checkbox" />
+						&nbsp;{{verb}}
+					</label>
+				</td>
+				<td>
+					<input type="checkbox" ng-model="host.is_enabled" />
+				</td>
+
+			</tr>
+	</table>
+
+	&lt;!&ndash;<input type="text" placeholder="Enter Host Name" ng-model="CORS.host.name" />&ndash;&gt; &lt;!&ndash;<button cls="btn btn-primary"
+	ng-click="addHost()">Add Host
+</button>&ndash;&gt;
+</div>
+<div class="form-group">
+	<h3>Guest Users <br />
+		<small>If enabled, the DSP is available with no sign-in required and all guest users will be assigned the selected role. If disabled, sign-in is required.</small>
+	</h3>
+	<input type="checkbox" ng-checked="Config.allow_guest_user" ng-model="Config.allow_guest_user" />
+	&nbsp;&nbsp;Allow guest users <br /> <br />
+
+	<div>
+		<label>Assign a Role for Guest Users</label>
+
+		<div>
+			<select class="form-control" data-ng-disabled="!Config.allow_guest_user"
+				data-ng-model="Config.guest_role_id"
+				data-ng-options="role.id as role.name for role in Roles.record"
+				data-ng-selected="Config.guest_role_id">
+				<option value="">- - None - -</option>
+			</select>
+		</div>
+	</div>
+</div>
+<div class="form-group">
+	<h3>Open Registration <br />
+		<small>If enabled, new users can add themselves as users to this DSP and will be assigned the selected role. If disabled, only an admin can add new users to this DSP.</small>
+	</h3>
+
+	<input type="checkbox" ng-checked="Config.allow_open_registration"
+		ng-model="Config.allow_open_registration" />
+	&nbsp;&nbsp;Allow open registration <br /> <br />
+
+	<div>
+		<label>Assign default role for open registration users</label>
+
+		<div>
+			<select class="form-control" data-ng-disabled="!Config.allow_open_registration"
+				data-ng-model="Config.open_reg_role_id"
+				data-ng-options="role.id as role.name for role in Roles.record"
+				data-ng-selected="Config.open_reg_role_id">
+				<option value="">- - None - -</option>
+			</select>
+		</div>
+	</div>
+	<div>
+		<label>Select an email service if you want to require email confirmation for open registration</label>
+
+		<div>
+			<select class="form-control" data-ng-disabled="!Config.allow_open_registration"
+				data-ng-model="Config.open_reg_email_service_id"
+				data-ng-options="svc.id as svc.name for svc in Service.record | filter: {type:'email'}"
+				data-ng-selected="Config.open_reg_email_service_id">
+				<option value="">- - None - -</option>
+			</select>
+		</div>
+	</div>
+	<div>
+		<label>Optionally select an email template for open registration</label>
+
+		<div>
+			<select class="form-control" data-ng-disabled="!Config.allow_open_registration || !Config.open_reg_email_service_id"
+				data-ng-model="Config.open_reg_email_template_id"
+				data-ng-options="template.id as template.name for template in emailTemplates.record"
+				data-ng-selected="Config.open_reg_email_template_id">
+				<option value="">- - None - -</option>
+			</select>
+		</div>
+	</div>
+</div>
+<div class="section">
+	<h3>User Invite <br />
+		<small>To enable user invites via email services, select an email service and template below. Leave it set to --None-- to disable user invites via email.</small>
+	</h3>
+
+	<div>
+		<label>Select an email service for user invites</label>
+
+		<div>
+			<select class="form-control" data-ng-model="Config.invite_email_service_id"
+				data-ng-options="svc.id as svc.name for svc in Service.record | filter: {type:'email'}"
+				data-ng-selected="Config.invite_email_service_id">
+				<option value="">- - None - -</option>
+			</select>
+		</div>
+	</div>
+	<div>
+		<label>Optionally select an email template for user invites</label>
+
+		<div>
+			<select class="form-control" data-ng-disabled="!Config.invite_email_service_id"
+				data-ng-model="Config.invite_email_template_id"
+				data-ng-options="template.id as template.name for template in emailTemplates.record"
+				data-ng-selected="Config.invite_email_template_id">
+				<option value="">- - None - -</option>
+			</select>
+		</div>
+	</div>
+</div>
+<div class="section">
+	<h3>Password Reset <br />
+		<small>o enable password reset via email confirmation, select an email service and template below. Leave it set to --None-- to disable password resets via email and use security question/answer.</small>
+	</h3>
+	<div>
+		<label>Select an email service for password reset email confirmation</label>
+
+		<div>
+			<select class="form-control" data-ng-model="Config.password_email_service_id"
+				data-ng-options="svc.id as svc.name for svc in Service.record | filter: {type:'email'}"
+				data-ng-selected="Config.password_email_service_id">
+				<option value="">- - None - -</option>
+			</select>
+		</div>
+	</div>
+	<div>
+		<label>Optionally select an email template for password reset</label>
+
+		<div>
+			<select class="form-control" data-ng-disabled="!Config.password_email_service_id"
+				data-ng-model="Config.password_email_template_id"
+				data-ng-options="template.id as template.name for template in emailTemplates.record"
+				data-ng-selected="Config.password_email_template_id">
+				<option value="">- - None - -</option>
+			</select>
+		</div>
+	</div>
+</div>
+&lt;!&ndash; Add email template section &ndash;&gt;
+<div class="form-inline">
+	<h3>Email Templates <br />
+		<small>Create a new email template or modify an existing one.</small>
+	</h3>
+
+	<select class="form-control"
+		data-ng-model="selectedEmailTemplateId"
+		data-ng-options="email.id as email.name for email in emailTemplates.record | filter: emailTemplatesFilter">
+		<option value="">- - Select a template - -</option>
+	</select>
+
+	<input class="form-control" data-ng-model="emailTemplatesFilter" type="text" placeholder="Filter By Name" />
+
+	<div class="btn-group pull-right">
+		<button type="button" class="btn" data-ng-click="newEmailTemplate()">New</button>
+		<button type="button" class="btn" data-ng-click="saveEmailTemplate(getSelectedEmailTemplate)">Save</button>
+		<button type="button" class="btn" data-ng-click="duplicateEmailTemplate()">Duplicate</button>
+		<button type="button" class="btn btn-danger" data-ng-click="deleteEmailTemplate(getSelectedEmailTemplate.id)">
+			Delete
+		</button>
+	</div>
+	<br /> <br />
+
+	<form novalidate>
+		<div class="tabbable tabs-left">
+			<ul class="nav nav-tabs" style="margin-right: 0">
+				<li data-ng-class="templateInfo={true: 'active', false: ''}[currentCreateEmailTab=='template-info-pane']">
+					<a href="javascript:void(0)" data-ng-click="showCreateEmailTab('template-info-pane')"
+						data-toggle="tab">Template Info</a></li>
+				<li data-ng-class="templateTo={true: 'active', false: ''}[currentCreateEmailTab=='template-to-pane']"><a
+					href="javascript:void(0)" data-ng-click="showCreateEmailTab('template-to-pane')"
+					data-toggle="tab">Template To</a></li>
+				<li data-ng-class="templateBody={true: 'active', false: ''}[currentCreateEmailTab=='template-body-pane']">
+					<a href="javascript:void(0)" data-ng-click="showCreateEmailTab('template-body-pane')"
+						data-toggle="tab">Template Body</a></li>
+				<li data-ng-class="templateReply={true: 'active', false: ''}[currentCreateEmailTab=='template-reply-pane']">
+					<a href="javascript:void(0)" data-ng-click="showCreateEmailTab('template-reply-pane')"
+						data-toggle="tab">Template From</a></li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane" data-ng-class="templateInfo" id="template-info-pane">
+					<div style="padding: 20px 10px 0 40px; background: white; border: 1px solid #dddddd; border-left: none">
+						<p>
+							<label for="template-name">Template Name:</label>
+							<input type="text"
+								name="template-name"
+								id="template-name"
+								data-ng-model="getSelectedEmailTemplate.name"
+								placeholder="Required"
+								required>
+						</p>
+
+						<p>
+							<label for="template-description">Template Description:</label>
+							<textarea
+								style="resize: none"
+								name="template-description"
+								id="template-description"
+								data-ng-model="getSelectedEmailTemplate.description"></textarea>
+						</p>
+					</div>
+				</div>
+				<div class="tab-pane" data-ng-class="templateTo" id="template-to-pane">
+					<div style="padding: 20px 10px 0 40px; background: white; border: 1px solid #dddddd; border-left: none">
+						<p>
+							<label for="template-to">To:</label>
+							<input type="text"
+								name="template-to"
+								id="template-to"
+								data-ng-model="getSelectedEmailTemplate.to">
+						</p>
+
+						<p>
+							<label for="template-cc">CC:</label>
+							<input type="text"
+								name="template-cc"
+								id="template-cc"
+								data-ng-model="getSelectedEmailTemplate.cc">
+						</p>
+
+						<p>
+							<label for="template-bcc">BCC:</label>
+							<input type="text"
+								name="template-bcc"
+								id="template-bcc"
+								data-ng-model="getSelectedEmailTemplate.bcc">
+						</p>
+					</div>
+				</div>
+				<div class="tab-pane" data-ng-class="templateBody" id="template-body-pane">
+					<div style="padding: 20px 10px 0 40px; background: white; border: 1px solid #dddddd; border-left: none">
+						<p>
+							<label for="template-subject">Subject:</label>
+							<input style="width: 80%"
+								type="text"
+								name="template-subject"
+								id="template-subject"
+								size="120"
+								data-ng-model="getSelectedEmailTemplate.subject">
+						</p>
+						&lt;!&ndash;
+						<p style="display: inline-block; float:left;">
+							<label for="template-body-text">Body Text:</label>
+							<textarea style="width: 300px; resize: none"
+								rows="5"
+								cols="250"
+								name="template-body-text"
+								id="template-body-text"
+								data-ng-model="getSelectedEmailTemplate.body_text"></textarea>
+						</p>
+						&ndash;&gt;
+						<p style="display: inline-block;">
+							<label for="template-body-html">Body:</label>
+							<textarea style="width: 80%; resize: none"
+								rows="5"
+								cols="250"
+								name="template-body-html"
+								id="template-body-html"
+								data-ng-model="getSelectedEmailTemplate.body_html"></textarea>
+						</p>
+					</div>
+				</div>
+				<div class="tab-pane" data-ng-class="templateReply" id="template-reply-pane">
+					<div style="padding: 10px 10px 0 40px; background: white; border: 1px solid #dddddd; border-left: none">
+						<div style="display: inline-block;">
+							<h6>From:</h6>
+
+							<p>
+								<label for="template-from-name">From Name:</label>
+								<input type="text"
+									name="template-from-name"
+									id="template-from-name"
+									data-ng-model="getSelectedEmailTemplate.from_name">
+							</p>
+
+							<p>
+								<label for="template-from-email">From Email:</label>
+								<input type="text"
+									name="template-from-email"
+									id="template-from-email"
+									data-ng-model="getSelectedEmailTemplate.from_email">
+							</p>
+						</div>
+						<div style="display:inline-block; margin-left: 40px">
+							<h6>Reply:</h6>
+
+							<p>
+								<label for="template-reply-to-name">Reply To Name:</label>
+								<input type="text"
+									name="template-reply-to-name"
+									id="template-reply-to-name"
+									data-ng-model="getSelectedEmailTemplate.reply_to_name">
+							</p>
+
+							<p>
+								<label for="template-reply-to-email">Reply To Email:</label>
+								<input type="text"
+									name="template-reply-to-email"
+									id="template-reply-to-email"
+									data-ng-model="getSelectedEmailTemplate.reply_to_email">
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="section limit-big-list">
+	<h3>Global Lookup Keys</h3>
+
+	<table class="table table-hover table-striped field-list">
+		<thead>
+			<tr>
+				<th style="width:220px;">Name</th>
+				<th style="width:220px;">Value</th>
+				<th style="width:35px;">Private</th>
+				<th class="no-border">
+					<div class="btn-group pull-left">
+						<button class="btn btn-sm" ng-click="newKey()">
+							<span class="icon-plus"></span>
+						</button>
+					</div>
+				</th>
+			</tr>
+		</thead>
+
+		<tbody>
+
+			<tr ng-repeat="key in Config.lookup_keys">
+				<td style="width: 220px;">
+					<input ng-model="key.name" type="text" style="width:200px;" />
+				</td>
+				<td style="width:220px;">
+					<input ng-model="key.value" type="text" style="width:200px;" />
+				</td>
+				<td style="width:35px;text-align:center;">
+					<input ng-model="key.private" type="checkbox" style="width:25px;vertical-align:middle;" />
+				</td>
+				<td class="no-border">
+					<div class="btn-group pull-left">
+						<button class="btn btn-sm" ng-click="removeKey()">
+							<span class="icon-trash"></span>
+						</button>
+					</div>
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+	<p ng-show="Config.lookup_keys.length==0">
+		No global lookup keys. Click the plus button to add.
+	</p>
+</div>
+<br />
+<button ng-click="save()" class="btn btn-primary">Save Configuration</button>
+</div>
+
+</div>

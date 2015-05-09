@@ -1,0 +1,42 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a data-toggle="collapse" data-target="#open-registration-config-body">
+            <h4 class="panel-title">Open Registration</h4>
+        </a>
+    </div>
+
+    <div id="open-registration-config-body" class="panel-collapse collapse">
+        <div class="panel-body">
+            <div class="form-group">
+                <label>Allow Open Registration</label>
+                <input data-ng-model="systemConfig.allow_open_registration"
+                       data-ng-checked="systemConfig.allow_open_registration" type="checkbox"/>
+            </div>
+
+            <div class="form-group">
+                <label>Select default Role For Open Registration users</label>
+                <select class="form-control" data-ng-model="systemConfig.open_reg_role_id"
+                        data-ng-options="role.id as role.name for role in rolesDataObj">
+                    <option value="">- - None - -</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Select an email service if you want to require email confirmation for open registration</label>
+                <select class="form-control" data-ng-model="systemConfig.open_reg_email_service_id"
+                        data-ng-options="service.id as service.name for service in servicesDataObj | filter:service.type='Email Service'">
+                    <option value="">- - None - -</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Optionally select an email template for open registration</label>
+                <select class="form-control" data-ng-model="systemConfig.open_reg_email_template_id"
+                        data-ng-options="emailTemplate.id as emailTemplate.name for emailTemplate in emailTemplatesDataObj">
+                    <option value="">- - None - -</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+</div>

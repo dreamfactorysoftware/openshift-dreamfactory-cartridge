@@ -1,0 +1,51 @@
+<div class="form-group">
+    <div class="alert alert-info">
+        <i class="fa fa-info-circle"></i>
+        Lookup keys for service configuration and credentials must be made private.
+    </div>
+
+    <table class="table table-hover table-striped table-responsive">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+            <th>Private</th>
+            <th>Allow User Update</th>
+            <th>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" data-ng-click="newKey()"><i class="fa fa-plus fa-fw"></i></button>
+                </div>
+            </th>
+        </tr>
+        </thead>
+
+
+        <tbody>
+
+        <tr data-ng-repeat="key in currentEditRecord.lookup_keys track by $index">
+            <td class="form-group" data-ng-class="_isUniqueKey() ? '' : 'has-error'" >
+                <input class="form-control" data-ng-model="key.name" type="text" data-ng-required="true"/>
+            </td>
+            <td>
+                <input class="form-control"  data-ng-model="key.value" type="text" data-ng-required="true" />
+            </td>
+            <td>
+                <input data-ng-model="key.private" type="checkbox" />
+            </td>
+            <td>
+                <input data-ng-model="key.allow_user_update" type="checkbox" />
+            </td>
+            <td>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" data-ng-click="removeKey()"><i class="fa fa-trash-o fa-fw"></i></button>
+                </div>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <p data-ng-if="!currentEditRecord.lookup_keys.length">
+        No lookup keys for this user. Click the plus button to add.
+    </p>
+</div>

@@ -1,0 +1,149 @@
+<!--
+<div class="row">
+    <div class="col-xs-12">
+        <div class="df-progress-border">
+            <div class="progress " data-ng-class="inProgress ? 'progress-striped active' : ''"
+                 style="width: 100%; height: 8px; margin-bottom: 0;">
+                <div class=""
+                     data-ng-class="inProgress ? 'progress-bar' : ''"
+                     role="progressbar" aria-valuenow="100"
+                     aria-valuemin="100" aria-valuemax="100" style="width: 100%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+
+
+<form class="css-form" name="userForm" data-ng-submit="createUser()">
+
+    <div class="well well-sm">
+        <div class="btn-toolbar">
+            <div class="btn-group " >
+                <button type="submit" class="btn btn-default btn-sm">Save</button>
+                <button type="button" data-ng-click="clearForm()" class="btn btn-default btn-sm">Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a data-toggle="collapse" data-target="#user-info-body">
+                <h4 class="panel-title">User Info</h4>
+            </a>
+        </div>
+
+        <div id="user-info-body" class="panel-collapse collapse in">
+            <div class="panel-body">
+
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle"></i>
+                    Enter the user's basic info.
+                </div>
+
+                <div>
+                    <div class="form-group">
+                        <label>Email address <small class="text-muted"> (required)</small></label>
+                        <input type="email" class="form-control" data-ng-model="currentEditRecord.email" placeholder="Enter email"
+                               data-ng-required="true"/>
+                    </div>
+                    <div class="form-group">
+                        <label>First Name <small class="text-muted"> (required)</small></label>
+                        <input type="text" class="form-control" data-ng-model="currentEditRecord.first_name" placeholder="Enter first name"
+                               data-ng-required="true"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name <small class="text-muted"> (required)</small></label>
+                        <input type="text" class="form-control" data-ng-model="currentEditRecord.last_name" placeholder="Enter last name"
+                               data-ng-required="true"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Display Name</label>
+                        <input type="text" class="form-control" data-ng-model="currentEditRecord.display_name" placeholder="Enter display name"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" class="form-control" data-ng-model="currentEditRecord.phone" placeholder="Enter phone number"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a data-toggle="collapse" data-target="#user-config-body">
+                <h4 class="panel-title">User Config</h4>
+            </a>
+        </div>
+
+        <div id="user-config-body" class="panel-collapse collapse in">
+            <div class="panel-body">
+
+                <div class="form-group">
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle"></i>
+                        System Administrators have access to all services and applications and cannot be assigned a role.
+                    </div>
+
+                    <df-sys-admin-user></df-sys-admin-user>
+                </div>
+
+                <hr />
+
+                <div class="form-group">
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle"></i>
+                        Roles provide a way to grant or deny access to specific applications and services on
+                        a per-user basis. Each user who is not a system admin must be assigned a role. Go to
+                        the Roles tab to create and manage roles.
+                    </div>
+                    <label>Assign a Role</label>
+                    <df-role-picker></df-role-picker>
+                </div>
+
+                <hr />
+
+                <div class="form-group">
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle"></i>
+                        A user must be activated before they are allowed to use services and applications.
+                    </div>
+                    <df-active-user></df-active-user>
+                </div>
+
+                <hr />
+
+                <div class="form-group">
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle"></i>
+                        You can manually set this user's password.
+                    </div>
+                    <df-set-user-password></df-set-user-password>
+                </div>
+
+                <hr />
+
+                <div class="form-group">
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle"></i>
+                        Lookup keys for service configuration and credentials must be made private.
+                    </div>
+                    <df-user-lookup-keys></df-user-lookup-keys>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="well well-sm">
+        <div class="btn-toolbar">
+            <div class="btn-group " >
+                <button type="submit" class="btn btn-default btn-sm">Save</button>
+                <button type="button" data-ng-click="clearForm()" class="btn btn-default btn-sm">Clear</button>
+            </div>
+        </div>
+    </div>
+</form>

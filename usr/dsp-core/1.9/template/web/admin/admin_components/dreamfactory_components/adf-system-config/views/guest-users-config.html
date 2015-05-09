@@ -1,0 +1,24 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a data-toggle="collapse" data-target="#guest-user-config-body">
+            <h4 class="panel-title">Guest Users</h4>
+        </a>
+    </div>
+
+    <div id="guest-user-config-body" class="panel-collapse collapse">
+        <div class="panel-body">
+            <div class="form-group">
+                <label>Allow Guest Users</label>
+                <input data-ng-model="systemConfig.allow_guest_user" data-ng-checked="systemConfig.allow_guest_user" type="checkbox"/>
+            </div>
+
+            <div class="form-group">
+                <label>Select Role for Guest Users</label>
+                <select class="form-control" data-ng-model="systemConfig.guest_role_id"
+                        data-ng-options="role.id as role.name for role in rolesDataObj">
+                    <option value="">- - None - -</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>

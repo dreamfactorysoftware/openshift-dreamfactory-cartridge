@@ -1,0 +1,11 @@
+<div class="form-group">
+    <div class="alert alert-info">
+        <i class="fa fa-info-circle"></i>
+        System Administrators have access to all services and applications and cannot be assigned a role.
+    </div>
+
+    <p>
+        System Administrator &nbsp;
+        <input data-ng-click="toggleRoleSelect($event.target.checked)" data-ng-checked="currentEditRecord.is_sys_admin" type="checkbox" data-ng-model="currentEditRecord.is_sys_admin"/>
+    </p>
+</div>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="author" content="DreamFactory Software, Inc.">
+	<meta name="language" content="en" />
+
+	<title>DreamFactory Services Platform&trade;</title>
+
+	<link rel="shortcut icon" href="/img/df_logo_factory-32x32.png" />
+
+	<!-- Standard CSS from style guide -->
+	<!-- Bootstrap 3 CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+	<!--[if IE 7]>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome-ie7.css">
+	<![endif]-->
+	<!-- DreamFactory Typography Css -->
+	<link rel="stylesheet" href="/css/df-custom-bs.css">
+	<link rel="stylesheet" href="/css/forms.css">
+
+	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="/js/html5shiv.js"></script>
+	<script src="/js/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body>
+<div id="wrap">
+	<div class="container" id="formbox">
+		<h2>Register as a User on this DSP!</h2>
+
+		<p>Please enter your email address, name, and desired password to complete the registration.</p>
+
+		<div class="row">
+			<!-- Register Form -->
+			<form id="form-register">
+				<div class="form-group">
+					<label for="email" class="sr-only">Email Address</label>
+
+					<div class="input-group">
+						<span class="input-group-addon bg_dg"><i class="fa fa-envelope fa-fw"></i></span>
+
+						<input tabindex="1" class="form-control email required" autofocus type="email" id="email" name="email" placeholder="Email Address" />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="email" class="sr-only">First Name</label>
+
+					<div class="input-group">
+						<span class="input-group-addon bg_dg"><i class="fa fa-user fa-fw"></i></span>
+
+						<input tabindex="2" class="form-control required" type="text" id="first_name" name="first_name" placeholder="First Name" />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="email" class="sr-only">Last Name</label>
+
+					<div class="input-group">
+						<span class="input-group-addon bg_dg"><i class="fa fa-user fa-fw"></i></span>
+
+						<input tabindex="3" class="form-control required" type="text" id="last_name" name="last_name" placeholder="Last Name" />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="email" class="sr-only">Display Name</label>
+
+					<div class="input-group">
+						<span class="input-group-addon bg_dg"><i class="fa fa-eye fa-fw"></i></span>
+
+						<input tabindex="4" class="form-control" type="text" id="display_name" name="display_name" placeholder="Display Name" />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="password" class="sr-only">Password</label>
+
+					<div class="input-group">
+						<span class="input-group-addon bg_ly"><i class="fa fa-lock fa-fw"></i></span>
+
+						<input tabindex="5" class="form-control password required" type="password" id="password" placeholder="Password" name="password" />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="password" class="sr-only">Verify Password</label>
+
+					<div class="input-group">
+						<span class="input-group-addon bg_ly"><i class="fa fa-check fa-fw"></i></span>
+
+						<input tabindex="6" class="form-control password required" type="password" id="password_verify" placeholder="Verify Password"
+							   name="password_verify" />
+					</div>
+				</div>
+
+				<div class="form-buttons">
+					<button tabindex="7" class="btn btn-success pull-right" type="submit">Register</button>
+				</div>
+			</form>
+		</div>
+		<div class="row">
+			<div class="alert" id="statusMessage" style="display: none;"></div>
+		</div>
+	</div>
+</div>
+<div id="push"></div>
+<div id="footer">
+	<div class="container align-center">
+		<p class="footer-text">&copy; <a href="http://dreamfactory.com">DreamFactory Software, Inc.</a> 2013. All Rights Reserved.</p>
+	</div>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+<script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js"></script>
+<script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/additional-methods.min.js"></script>
+<script src="/js/json2.js"></script>
+<script src="/js/utils.js"></script>
+<script>
+$("#form-register").submit(function(event) {
+	event.preventDefault();
+	var data = {};
+	data.email = $("#email").val();
+	data.first_name = $("#first_name").val();
+	data.last_name = $("#last_name").val();
+	if (data.email == '' || data.first_name == '' || data.last_name == '') {
+		$("#statusMessage").addClass('alert-danger').html("Please enter all fields.").show();
+		return false;
+	}
+	data.new_password = $("#password").val();
+	if (data.new_password == '' || data.new_password != $("#password_verify").val()) {
+		$("#statusMessage").addClass('alert-danger').html("Please enter matching passwords.").show();
+		return false;
+	}
+
+	data = JSON.stringify(data);
+	var promise = $.ajax({
+		beforeSend: function(xhrObj) {
+			xhrObj.setRequestHeader("Content-Type", "application/json");
+			xhrObj.setRequestHeader("Accept", "application/json");
+		},
+		type:       "POST",
+		url:        "/rest/user/register/?app_name=launchpad",
+		data:       data,
+		dataType:   "json"
+	});
+	promise.done(function() {
+		window.location = "/";
+	});
+	promise.fail(function(response) {
+		$("#statusMessage").addClass('alert-danger').removeClass("alert-success").html(getErrorString(response)).show();
+	});
+});
+</script>
+</body>
+</html>

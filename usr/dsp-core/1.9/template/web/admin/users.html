@@ -1,0 +1,312 @@
+<div class="panel panel-default">
+<div class="panel-heading resource-header"><strong>Users</strong>
+
+    <div id="app-buttons" class="btn-group btn-group-sm pull-right">
+        <button ng-click="promptForNew()" class="btn btn-default">
+            <li class="icon-plus-sign-alt"></li>
+            Create New User
+        </button>
+        <button ng-click="showImportModal()" class="btn btn-default">
+            <li class="icon-cloud-upload"></li>
+            Import Users
+        </button>
+        <button ng-click="showExportModal()" class="btn btn-default">
+            <li class="icon-cloud-download"></li>
+            Export Users
+        </button>
+    </div>
+</div>
+
+
+<table id="resource-container">
+<tr>
+<td>
+    <input placeholder="Filter by Name" type="text" class="form-control" data-ng-model="searchText"/><br/>
+    <ul id="resource-list" class="list-group">
+        <li ng-click="showDetails()"  data-ng-class="user.id === currentUserId ? 'active' : ''" class="list-group-item" ng-repeat="user in Users.record | filter:searchText" id="row_{{user.id}}">
+            <span class="user-name" >{{user.display_name}}</span>
+            <span class="btn-group btn-group-sm" ng-show="user.user_source == 0 && !user.confirmed">
+                                      <button class="btn btn-default" title="Reinvite unconfirmed user"
+                                              ng-click="invite()"><i class="icon-envelope"></i></button>
+                                      <button class="btn btn-default" title="Delete this user"
+                                              ng-click="delete()"><i
+                                              class="icon-trash"></i>
+                                      </button>
+            </span>
+            <span ng-show="user.user_source > 0 || (user.user_source == 0 && user.confirmed)" class="btn-group btn-group-sm">
+                <button class="btn btn-default" title="Delete this user" ng-click="delete()"><i class="icon-trash"></i></button>
+            </span>
+
+        </li>
+    </ul>
+</td>
+<td style="width:100%">
+
+
+
+
+
+
+
+
+<div class="modal fade" id="importUsersModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Import Users</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert">Select a file to import. Supported file types are CSV, JSON, and XML. You can export
+                    users to see the expected file format.
+                </div>
+                <p>
+
+                <p>
+
+                <form id="importUsersForm" method="POST" enctype="multipart/form-data" target="userIframe">
+                    <input id="userInput" type="file" name="files" size="50"/>
+
+                    <div ng-show="Config.invite_email_service_id != null">
+                        <br/>
+
+                        <p>
+                            <input id="importUsersInvite" name="send_invite" value="true" type="checkbox"
+                                   ng-disabled="Config.invite_email_service_id == null" ng-checked="true"/>&nbsp;Send
+                            invite
+                            via email
+                        </p>
+                    </div>
+                </form>
+                <iframe id="userIframe" style="display: none;" name="userIframe" src="about:blank"
+                        onload="checkImportResults(this)"></iframe>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn" data-dismiss="modal">Cancel</a>
+                <a class="btn btn-primary" ng-click="importUsers()">Import</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="modal fade" id="exportUsersModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Export Users</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert">Select an export file type and click Export.</div>
+                <p>
+
+                <p>
+                    <label>File Type</label>
+                    <select id="export_options" ng-model="selectedExportFormat"
+                            ng-options="option as option for option in supportedExportFormats">
+                    </select>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a class="btn" data-dismiss="modal">Cancel</a>
+                <a class="btn btn-primary" ng-click="exportUsers()">Export</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form novalidate class="css-form" name="userform">
+    <div class="add_new">
+        <h3>{{action}} User</h3>
+        <br/>
+        <div id="step1">
+            <div class="section">
+                <div class="form-group">
+                    <label>Email address</label>
+                    <input type="email" class="form-control" data-ng-model="user.email" placeholder="Enter email" required/>
+                </div>
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" class="form-control" data-ng-model="user.first_name" placeholder="Enter first name" required/>
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" class="form-control" data-ng-model="user.last_name" placeholder="Enter last name"
+                           required/>
+                </div>
+                <div class="form-group">
+                    <label>Display Name</label>
+                    <input type="text" class="form-control" data-ng-model="user.display_name" placeholder="Enter display name"/>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" class="form-control" data-ng-model="user.phone" placeholder="Enter phone number"/>
+                </div>
+            </div>
+            <div class="section" ng-class="{'alert alert-success': user.is_sys_admin}">
+                <div class="checkbox">
+                    <label>
+                        <input ng-click="toggleRoleSelect($event.target.checked)" ng-checked="user.is_sys_admin"
+                               type="checkbox" ng-model="user.is_sys_admin"/>This is a System
+                        Administrator
+                    </label>
+                </div>
+            </div>
+            <br/>
+
+            <div class="section">
+                <p><b>Assign a Role</b></p>
+
+                <div class="alert alert-info">
+                    <li class="fa fa-info-circle"></li>
+                    Roles provide a way to grant or deny access to specific applications and services on
+                    a per-user basis. Each user who is not a system admin must be assigned a role. Go to
+                    the Roles tab to create and manage roles.
+                </div>
+                <div>
+                    <select class="form-control" ng-disabled="user.is_sys_admin" ng-model="user.role_id">
+                        <option ng-selected="user.role_id == role.id" ng-repeat="role in Roles.record"
+                                value="{{role.id}}">{{role.name}}
+                        </option>
+                    </select>
+
+                </div>
+            </div>
+        </div>
+        <br/>
+
+        <div class="section" ng-class="{'alert alert-success': user.is_active}">
+            <div class="checkbox">
+                <label>
+                    <input ng-checked="user.is_active" type="checkbox" ng-model="user.is_active"/>&nbsp;<b>This user
+                    is/will be Active</b>&nbsp;
+                </label>
+            </div>
+        </div>
+        <div class="section" ng-hide="user.user_source > 0">
+
+            <div class="alert alert-info"
+                 ng-show="action=='Create' && Config.invite_email_service_id == null">
+                <li class="fa fa-info-circle"></li>
+                &nbsp;If you'd like to send an invite message via email, please see the system
+                configuration to set up user invitations.
+            </div>
+            <div ng-show="action=='Create' && Config.invite_email_service_id != null">
+                <input ng-disabled="passwordEdit" type="checkbox" ng-model="sendInvite"/>&nbsp;Send
+                invite via email
+            </div>
+            <div ng-show="action=='Edit'">
+                <input ng-checked="passwordEdit" type="checkbox" ng-model="passwordEdit"/>&nbsp;Change
+                password
+            </div>
+            <div ng-show="action=='Create' && Config.invite_email_service_id != null">
+                <input ng-disabled="sendInvite" ng-checked="passwordEdit" type="checkbox"
+                       ng-model="passwordEdit"/>&nbsp;<strong>Set password manually</strong>
+            </div>
+            <div ng-show="action=='Create' && Config.invite_email_service_id == null">
+                <input ng-checked="passwordEdit" type="checkbox" ng-model="passwordEdit"/>&nbsp;Set
+                password manually
+            </div>
+
+            <div ng-show="passwordEdit ">
+                <br/>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" class="form-control" data-ng-model="user.password"
+                           placeholder="Enter password" />
+                </div>
+
+                <div class="form-group">
+                    <label>Verify Password</label>
+                    <input id="passwordRepeat" class="form-control" name="passwordRepeat" type="password"
+                           ng-model="passwordRepeat"/>
+                </div>
+            </div>
+        </div>
+        <br/>
+
+        <div class="section limit-big-list">
+            <p>User Lookup Keys</p>
+            <table class="table table-hover table-striped field-list">
+                <thead>
+                <tr>
+                    <th style="width:220px;">Name</th>
+                    <th style="width:220px;">Value</th>
+                    <th style="width:35px;">Private</th>
+                    <th style="width:140px;">Allow User Update</th>
+                    <th class="no-border">
+                        <div class="btn-group pull-left">
+                            <a class="btn btn-mini btn-inverse" ng-click="">
+                                <i class="icon-plus" ng-click="newKey()"></i>
+                            </a>
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr ng-repeat="key in user.lookup_keys">
+                    <td style="width: 220px;">
+                        <input ng-model="key.name" type="text" style="width:200px;"/>
+                    </td>
+                    <td style="width:220px;">
+                        <input ng-model="key.value" type="text" style="width:200px;"/>
+                    </td>
+                    <td style="width:35px;text-align:center;">
+                        <input ng-model="key.private" type="checkbox" style="width:25px;vertical-align:middle;"/>
+                    </td>
+                    <td style="width:140px;text-align:center;">
+                        <input ng-model="key.allow_user_update" type="checkbox"
+                               style="width:25px;vertical-align:middle;"/>
+                    </td>
+                    <td class="no-border">
+                        <div class="btn-group pull-left">
+                            <a class="btn btn-mini btn-inverse" ng-click="removeKey()">
+                                <i class="icon-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+            <p ng-show="user.lookup_keys.length==0">
+                No lookup keys for this user. Click the plus button to add.
+            </p>
+        </div>
+        <br/>
+
+
+
+    </div>
+</form>
+
+<div id="button_holder">
+    <span data-ng-show="action==='Create'"> <input  type="checkbox" data-ng-model = "create_another"/>&nbsp;Create Another&nbsp;</span>
+    <button id="save_button" ng-show="action=='Create'" ng-click="create()"
+            class="btn btn-primary" ng-disabled="userform.$invalid">
+        <i class="icon-save"></i>
+        &nbsp;Save
+    </button>
+    <button id="update_button" ng-show="action=='Edit'" ng-click="save()"
+            class="btn btn-primary" ng-disabled="userform.$invalid">
+        <i class="icon-save"></i>
+        &nbsp;Update
+    </button>
+</div>
+</td>
+</tr>
+</table>
+</div>
+
+
+<iframe id="exportUsersFrame" style="display:none" frameBorder="0"></iframe>

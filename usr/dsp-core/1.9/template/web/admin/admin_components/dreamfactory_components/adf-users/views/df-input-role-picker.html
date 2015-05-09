@@ -1,0 +1,12 @@
+<div class="form-group">
+    <div class="alert alert-info">
+        <i class="fa fa-info-circle"></i>
+        Roles provide a way to grant or deny access to specific applications and services on
+        a per-user basis. Each user who is not a system admin must be assigned a role. Go to
+        the Roles tab to create and manage roles.
+    </div>
+    <p>Assign a Role</p>
+    <select data-ng-disabled="currentEditRecord[templateData.dependent]" class="form-control" data-ng-model="currentEditRecord.role_id" data-ng-options="obj[overrideFields[templateData.prop].display.value] as obj[overrideFields[templateData.prop].display.label] for obj in overrideFields[templateData.prop].records">
+        <option value="">-- None --</option>
+    </select>
+</div>

@@ -1,0 +1,90 @@
+<nav class="navbar navbar-default bg-info" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#admin-app-apps">
+                <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+            </button>
+            <span class="navbar-brand">Package Manager</span>
+        </div>
+    </div>
+</nav>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a data-toggle="collapse" data-target="#role-body">
+            <h4 class="panel-title">Packages Info</h4>
+        </a>
+    </div>
+    <div id="role-body" class="panel-collapse collapse in">
+        <div class="panel-body">
+
+            <div class="col-sm-12 col-md-8 col-md-push-4">
+                <h3>Package Applications</h3>
+
+                <div id="package-form" style="display:none">
+
+                    <div class="section">
+                        <h5>Database Schema(s)</h5>
+
+                        <div class="form-inline" ng-show="service.type.indexOf('SQL DB Schema') == -1 && service.type.indexOf(' SQL DB') != -1"
+                             ng-repeat="service in Services.record">
+                            <h6>{{service.name}}</h6>
+
+                            <div ng-repeat="component in service.components">
+                                <input
+                                        ng-click="addServiceToAppWithComponents($event.target.checked)"
+                                        type="checkbox" class="include-schema" />
+                                &nbsp;&nbsp;{{component.name}}
+                            </div>
+                        </div>
+
+                        <br />
+                        <h5>Services</h5>
+
+                        <div class="form-inline" ng-show="service.type.indexOf('SQL DB Schema') == -1 && !service.is_system"
+                             ng-repeat="service in Services.record">
+                            <h6>
+                                <input class="include-service" ng-click="addServiceToApp($event.target.checked)"
+                                       type="checkbox" />
+                                &nbsp;&nbsp;{{service.name}}
+                            </h6>
+                        </div>
+
+                    </div>
+                    <br />
+
+                    <input type="checkbox" ng-model="include_files" />
+                    &nbsp;&nbsp;Include this application's files in this package. <br /><br />
+                    <button ng-click="export()" class="btn btn-info">Export App</button>
+                </div>
+                <div id="splash">
+                    <div class="alert alert-info">
+                        <i class="fa fa-fw fa-info-circle"></i>
+                        To create a DreamFactory package file for your app, follow these instructions.
+                    </div>
+                    <ol>
+                        <li>Select the app from the list just to the left.</li>
+                        <li>Choose the database schema you'd like to export.</li>
+                        <li>Choose which services you'd like to export.</li>
+                        <li>Press Export to be prompted to save your new .dfpkg file.</li>
+                    </ol>
+                </div>
+                <iframe id="download_frame" style="display:none" frameBorder="0"></iframe>
+            </div>
+
+            <div class="col-sm-12 col-md-4 col-md-pull-8">
+                <div class="form-group">
+                    <div style="padding-top: 30px" class="visible-sm visible-xs"></div>
+                    <input placeholder="Filter by Name" type="text" class="form-control" data-ng-model="searchText" />
+                </div>
+                <div class="list-group">
+                    <a class="list-group-item" style="cursor:pointer"
+                       ng-click="showDetails()"
+                       data-ng-class="app.id === currentAppId ? 'active' : ''"
+                       data-ng-repeat="app in Apps.record | filter:searchText"
+                       id="row_{{app.id}}">{{app.name}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+
+<!-- Active when creating a User -->
+<div data-ng-show="activeView === 'new'">
+    <div class="alert alert-info" data-ng-show="!systemConfig.invite_email_service_id">
+        <i class="fa fa-info-circle"></i>
+        If you would like to send an invite message via email, please see the system configuration to set up user invitations.
+    </div>
+    <p data-ng-show="systemConfig.invite_email_service_id">
+        Send Email Invitation &nbsp;
+        <input type="checkbox" data-ng-model="inviteUserOnCreate" data-ng-checked="inviteUserOnCreate" />
+    </p>
+</div>
+
+        <!-- Active when editing a user -->
+<div data-ng-show="activeView === 'edit'">
+    <div data-ng-if="currentEditRecord.confirmed"><p>Confirmed</p></div>
+    <div data-ng-if="!currentEditRecord.confirmed">
+        <button type="button" class="btn btn-default" data-ng-click="invite()"><i class="icon-envelope"></i> Send Invite</button>
+    </div>
+</div>
+

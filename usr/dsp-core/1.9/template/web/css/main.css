@@ -1,0 +1,73 @@
+/**
+ * this file has been incorporated into dsp.main.css
+ */
+@import url(dsp.main.css);
+
+/**
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,700);
+@import url(http://fonts.googleapis.com/css?family=Lato:400,300,700);
+
+html, body {
+	height: 100%;
+}
+
+body {
+	font-family:   'Open Sans', 'Helvetica Neue Light', 'Arial', sans-serif;
+	font-weight:   300;
+	margin-bottom: 43px;
+}
+
+#footer {
+	position:         fixed;
+	bottom:           0;
+	width:            100%;
+	background-color: #4D4D4D;
+}
+
+.footer-text {
+	margin: 10px 0;
+}
+
+.align-center {
+	text-align: center;
+	margin:     auto;
+}
+
+.container .credit {
+	margin: 20px 0;
+}
+
+#footer > .container {
+	padding-left:  15px;
+	padding-right: 15px;
+	padding-top:   4px;
+}
+
+code {
+	font-size: 80%;
+}
+
+#footer ul, ol {
+	margin-bottom: 0;
+}
+
+#footer .social-links {
+	margin-top: 4px;
+}
+
+#footer > .container p {
+	margin-bottom: 0;
+}
+
+legend {
+	font-weight:   400;
+	margin-bottom: 10px;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+	font-family: 'Open Sans', 'Helvetica Neue Light', 'Arial', sans-serif;
+	font-weight: 700;
+	line-height: 1.1;
+	color:       inherit;
+}
+**/

@@ -1,0 +1,43 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a data-toggle="collapse" data-target="#cors-access-config-body">
+            <h4 class="panel-title">CORS Access</h4>
+        </a>
+    </div>
+    <div id="cors-access-config-body" class="panel-collapse collapse">
+        <div class="panel-body">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default" data-ng-click="addNewHost()">Add New host</button>
+            </div>
+        </div>
+
+        <table class="table">
+            <tr>
+                <th>Host</th>
+                <th>Allowed HTTP Verbs</th>
+                <th>Enabled</th>
+                <th></th>
+            </tr>
+            <tr data-ng-repeat="host in allowedHosts track by $index">
+                <td>
+                    <input data-ng-model="host.host" class="form-control" type="text" placeholder="Enter Host Name"/>
+                </td>
+                <td>
+                    <!--<dreamfactory-cors-verb-selector host="host"></dreamfactory-cors-verb-selector>-->
+                    <df-verb-picker data-allowed-verbs="host.verbs"></df-verb-picker>
+                </td>
+
+                <td>
+                    <label>
+                        <small>Enable</small>
+                    </label>
+                    <input type="checkbox" data-ng-checked="host.is_enabled" data-ng-model="host.is_enabled"/>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-default btn-sm" data-ng-click="removeHost($index)"><i class="fa fa-trash-o fa-fw"></i>
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
