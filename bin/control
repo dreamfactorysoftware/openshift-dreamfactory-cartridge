@@ -1,0 +1,189 @@
+#!/bin/bash -e
+
+source ${OPENSHIFT_PHP_DIR}usr/lib/php_config
+
+HTTPD_CFG_FILE=$OPENSHIFT_PHP_DIR/configuration/etc/conf/httpd_nolog.conf
+HTTPD_CFG_DIR=$OPENSHIFT_PHP_DIR/configuration/etc/conf.d
+ERB_HTTPD_CFG_DIR=$OPENSHIFT_PHP_DIR/usr/shared/etc/conf.d/
+HTTPD_PASSENV_FILE=$HTTPD_CFG_DIR/passenv.conf
+HTTPD_PID_FILE=$OPENSHIFT_PHP_DIR/run/httpd.pid
+
+# construct the configuration directives for httpd
+HTTPD_CMD_CONF="-C 'Include $HTTPD_CFG_DIR/*.conf' -f $HTTPD_CFG_FILE"
+for dir in /etc/openshift/cart.conf.d/httpd{,/php} ; do
+    [ -d $dir ] && HTTPD_CMD_CONF="$HTTPD_CMD_CONF -c 'Include $dir/*.conf'"
+done
+
+function pre_start_httpd_config {
+    write_server_status ${HTTPD_CFG_DIR}/server-status.conf
+    write_httpd_passenv $HTTPD_PASSENV_FILE
+    select_php_document_root ${OPENSHIFT_REPO_DIR}
+    oo-erb ${ERB_HTTPD_CFG_DIR}openshift.conf.erb > ${HTTPD_CFG_DIR}/openshift.conf
+    oo-erb ${OPENSHIFT_PHP_DIR}conf/performance.conf.erb.hidden > $HTTPD_CFG_DIR/performance.conf
+    enable_modules
+    ensure_valid_httpd_process "$HTTPD_PID_FILE" "$HTTPD_CFG_FILE"
+}
+
+function start() {
+    echo "Starting PHP ${OPENSHIFT_PHP_VERSION} cartridge (Apache+mod_php)"
+    pre_start_httpd_config
+    # Force httpd into its own pgroup, as httpd is hard-coded to TERM everything in
+    # its pgroup during shutdown (even while foregrounded)
+    set -m
+    php_context "nohup /usr/sbin/httpd $HTTPD_CMD_CONF -D FOREGROUND |& /usr/bin/logshifter -tag php &" \
+      && wait_for_pid_file $HTTPD_PID_FILE
+    set +m
+    return $?
+}
+
+function reload() {
+    echo "Reloading PHP ${OPENSHIFT_PHP_VERSION} cartridge (Apache+mod_php)"
+    pre_start_httpd_config
+    httpd_pid=`cat "$HTTPD_PID_FILE" 2> /dev/null`
+    kill -USR1 $httpd_pid && wait_for_pid_file $HTTPD_PID_FILE
+    return $?
+}
+
+function restart() {
+    echo "Restarting PHP ${OPENSHIFT_PHP_VERSION} cartridge (Apache+mod_php)"
+    ensure_httpd_restart_succeed "$HTTPD_PID_FILE" "$HTTPD_CFG_FILE"
+    if [ -f "$HTTPD_PID_FILE" ]; then
+        pre_start_httpd_config
+        httpd_pid=`cat "$HTTPD_PID_FILE" 2> /dev/null`
+        kill -HUP $httpd_pid
+    else
+        start
+    fi
+
+    return $?
+}
+
+function stop() {
+    echo "Stopping PHP ${OPENSHIFT_PHP_VERSION} cartridge (Apache+mod_php)"
+    ensure_valid_httpd_pid_file "$HTTPD_PID_FILE" "$HTTPD_CFG_FILE"
+    if [ -f "$HTTPD_PID_FILE" ]; then
+      # If we still have a PID file, then ensure_valid_httpd_process's call to
+      # killall_httpds didn't happen.
+      shutdown_httpd_graceful $HTTPD_PID_FILE
+    fi
+}
+
+function configtest() {
+    echo "Testing Apache *.conf files"
+    php_context "/usr/sbin/httpd $HTTPD_CMD_CONF -t"
+    return $?
+}
+
+function status() {
+    if output=$(curl http://$OPENSHIFT_PHP_IP:$OPENSHIFT_PHP_PORT/server-status?auto 2>&1 ); then
+        client_result "Application is running"
+        client_result $output
+    else
+        client_result "Application is either stopped or inaccessible"
+    fi
+}
+
+function tidy() {
+    echo "Emptying php logs in dir: $OPENSHIFT_LOG_DIR"
+    shopt -s dotglob
+    rm -rf $OPENSHIFT_LOG_DIR/php.log* || :
+}
+
+function build() {
+    # Force clean build (.openshift/markers/force_clean_build)
+    if force_clean_build_enabled_for_latest_deployment; then
+        echo "Force clean build enabled - recreating PEARs"
+        mkdir -p ${OPENSHIFT_PHP_DIR}phplib/pear/{docs,ext,php,cache,cfg,data,download,temp,tests,www}
+    fi
+
+    # PEAR
+    local pear_file=.openshift/pear.txt
+    if [ -f ${OPENSHIFT_REPO_DIR}deplist.txt ]; then
+        if [ ! -f ${OPENSHIFT_REPO_DIR}${pear_file} ]; then
+            pear_file=deplist.txt
+            echo "The deplist.txt file was deprecated in favor of .openshift/pear.txt."
+            echo "Please consider running \`git mv deplist.txt .openshift/pear.txt' command."
+        else
+            echo "It appears you have a deplist.txt and .openshift/pear.txt file."
+            echo "Please consider running \`git rm deplist.txt'."
+        fi
+    fi
+    if [ -f ${OPENSHIFT_REPO_DIR}${pear_file} ]; then
+        echo "Checking ${pear_file} for PEAR dependency..."
+        local show_cleanbuild_msg=0
+
+        for f in $(cat ${OPENSHIFT_REPO_DIR}${pear_file}); do
+            echo -e "Checking PEAR: $f\n"
+
+            if php_context "pear info '$f' &>/dev/null"; then # package is already installed
+
+                local current_version=$(pear info "$f" | awk '$0$1 ~/Release Version/ {print $3;}')
+                local desired_version=$(echo "$f" | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p')
+
+                if [ "$current_version" != "$desired_version" ]; then
+                    php_context "pear upgrade --alldeps '$f'" || show_cleanbuild_msg=1
+                fi
+            else
+                php_context "pear install --alldeps '$f'"
+            fi
+            echo
+            # Remove gear-specific absolute paths from the generated PEAR
+            # files except from the hidden dirs/files (cache, registry etc.)
+            find ${OPENSHIFT_PHP_DIR}phplib/pear/pear/ -type f \( ! -regex '.*/\..*' \) \
+              -exec sed -i "s|${OPENSHIFT_HOMEDIR}|~/|g" {} \;
+        done
+
+        if [ $show_cleanbuild_msg -eq 1 ]; then
+            echo -e "Tip: Use the .openshift/markers/force_clean_build marker file to do a clean build.\n"
+            exit 1
+        fi
+    fi
+
+    # Composer
+    if [ -f ${OPENSHIFT_REPO_DIR}.openshift/markers/use_composer ]; then
+        local composer_lock_msg="\nPlease, consider committing the composer.lock file into your repository:\n"
+        composer_lock_msg+=" $ rhc scp ${OPENSHIFT_APP_NAME} download ./ app-root/repo/composer.lock\n"
+        composer_lock_msg+=" $ git add composer.lock && git commit -am'Lock specific set of Composer dependencies'\n"
+        if [ "${APPLICATION_ENV:-}" != "development" ]; then
+            # Production
+            echo -n "Checking composer.json for Composer dependency... "
+            if [ -f ${OPENSHIFT_REPO_DIR}composer.json ]; then
+                echo
+                composer install --no-interaction --no-ansi --no-scripts --optimize-autoloader --working-dir=${OPENSHIFT_REPO_DIR} || \
+                echo -e "\nSkipping Composer errors..\n\n  Please, fix the errors either locally or in development mode.\n"
+                if [ ! -f ${OPENSHIFT_REPO_DIR}composer.lock ]; then
+                    echo -e $composer_lock_msg
+                fi
+            else
+                echo "File not found."
+            fi
+        else
+            # Development
+            if [ -f ${OPENSHIFT_REPO_DIR}composer.lock ]; then
+                echo "Ignoring composer.lock file (development mode)"
+            fi
+            echo -n "Checking composer.json for Composer dependency... "
+            if [ -f ${OPENSHIFT_REPO_DIR}composer.json ]; then
+                echo
+                composer update --no-interaction --no-ansi --no-scripts --optimize-autoloader --working-dir=${OPENSHIFT_REPO_DIR}
+                echo -e $composer_lock_msg
+            else
+                echo "File not found."
+            fi
+        fi
+    fi
+}
+
+case "$1" in
+  start)           start ;;
+  stop)            stop ;;
+  restart)         restart ;;
+  reload|graceful) reload ;;
+  status)          status ;;
+  configtest)      configtest ;;
+  tidy)            tidy ;;
+  build)           build ;;
+  *)               exit 0
+esac
+
+exit $?
