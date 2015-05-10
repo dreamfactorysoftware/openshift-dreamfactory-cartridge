@@ -1,12 +1,16 @@
-ServerRoot "<%= ENV['OPENSHIFT_PHP_DIR'] %>"
+# OPENSHIFT_PHP_DOCUMENT_ROOT is exported by
+# ${OPENSHIFT_DREAMFACTORY_DIR}usr/php/lib/php_config and is not an OpenShift
+# generated variable.
+
+ServerRoot "<%= ENV['OPENSHIFT_DREAMFACTORY_DIR'] %>"
 DocumentRoot "<%= ENV['OPENSHIFT_PHP_DOCUMENT_ROOT'] || "#{ENV['OPENSHIFT_REPO_DIR']}php" %>"
-Listen <%= "#{ENV['OPENSHIFT_PHP_IP']}:#{ENV['OPENSHIFT_PHP_PORT']}" %>
+Listen <%= "#{ENV['OPENSHIFT_DREAMFACTORY_IP']}:#{ENV['OPENSHIFT_DREAMFACTORY_PORT']}" %>
 User  <%= ENV['OPENSHIFT_GEAR_UUID'] %>
 Group <%= ENV['OPENSHIFT_GEAR_UUID'] %>
 ErrorLog "|tee"
 CustomLog "|tee" combined
 <IfVersion >= 2.4>
-DefaultRuntimeDir "<%= "#{ENV['OPENSHIFT_PHP_DIR']}run"%>"
+DefaultRuntimeDir "<%= "#{ENV['OPENSHIFT_DREAMFACTORY_DIR']}run"%>"
 </IfVersion>
 
 <Directory "<%= ENV['OPENSHIFT_PHP_DOCUMENT_ROOT'] || "#{ENV['OPENSHIFT_REPO_DIR']}php" %>">

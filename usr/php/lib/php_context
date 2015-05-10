@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function php_context {
-  case $OPENSHIFT_PHP_VERSION in
+  case $DREAMFACTORY_PHP_VERSION in
     5.3) eval $1 ;;
     5.4) /usr/bin/scl enable php54 "$1" ;;
   esac
@@ -9,20 +9,20 @@ function php_context {
 
 function update_configuration {
   # PEAR bin_dir
-  local path=${OPENSHIFT_PHP_DIR}phplib/pear/pear
+  local path=${OPENSHIFT_DREAMFACTORY_DIR}phplib/pear/pear
 
-  case $OPENSHIFT_PHP_VERSION in
+  case $DREAMFACTORY_PHP_VERSION in
     5.4)
       # SCL bin_dir
       path=$(path_append ${path:-:} $(dirname $(scl enable php54 "which php") | tr -d '\n'))
 
       local man_path=$(MANPATH="" scl enable php54 "printenv MANPATH")
-      path_append ${MANPATH:-:} ${man_path:-:} > ${OPENSHIFT_PHP_DIR}env/MANPATH
+      path_append ${MANPATH:-:} ${man_path:-:} > ${OPENSHIFT_DREAMFACTORY_DIR}env/MANPATH
       ;;
   esac
 
   # Composer
-  path=$(path_append ${path:-:} ${OPENSHIFT_PHP_DIR}usr/bin)
+  path=$(path_append ${path:-:} ${OPENSHIFT_DREAMFACTORY_DIR}usr/bin)
 
-  echo $path > ${OPENSHIFT_PHP_DIR}env/OPENSHIFT_PHP_PATH_ELEMENT
+  echo $path > ${OPENSHIFT_DREAMFACTORY_DIR}env/OPENSHIFT_PHP_PATH_ELEMENT
 }

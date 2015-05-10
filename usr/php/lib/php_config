@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
-source ${OPENSHIFT_PHP_DIR}usr/php/lib/php_context
+source ${OPENSHIFT_DREAMFACTORY_DIR}usr/php/lib/php_context
 
 function select_php_document_root {
     for dir in php public public_html web www; do
@@ -22,7 +22,7 @@ function system_php_dir {
 }
 
 function enable_modules {
-    local phpd=${OPENSHIFT_DREAMFACTORY_DIR}usr/php/${OPENSHIFT_PHP_VERSION}/etc/php.d
+    local phpd=${OPENSHIFT_DREAMFACTORY_DIR}usr/php/${DREAMFACTORY_PHP_VERSION}/etc/php.d
     declare -A modules
     local failed_modules=()
     local module=
