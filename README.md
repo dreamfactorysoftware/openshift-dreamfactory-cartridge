@@ -1,2 +1,2 @@
-# OpenShift PHP Cartridge
-This cartridge is documented in the [Cartridge Guide](http://openshift.github.io/documentation/oo_cartridge_guide.html#php).
+# OpenShift DreamFactory Cartridge
+This cartridge lets you instantly deploy DreamFactory on OpenShift.
