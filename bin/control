@@ -25,7 +25,7 @@ function pre_start_httpd_config {
 }
 
 function start() {
-    echo "Starting PHP ${OPENSHIFT_PHP_VERSION} cartridge (Apache+mod_php)"
+    echo "Starting PHP ${DREAMCART_PHP_VERSION} (Apache+mod_php)"
     pre_start_httpd_config
     # Force httpd into its own pgroup, as httpd is hard-coded to TERM everything in
     # its pgroup during shutdown (even while foregrounded)
@@ -37,7 +37,7 @@ function start() {
 }
 
 function reload() {
-    echo "Reloading PHP ${OPENSHIFT_PHP_VERSION} cartridge (Apache+mod_php)"
+    echo "Reloading PHP ${DREAMCART_PHP_VERSION} (Apache+mod_php)"
     pre_start_httpd_config
     httpd_pid=`cat "$HTTPD_PID_FILE" 2> /dev/null`
     kill -USR1 $httpd_pid && wait_for_pid_file $HTTPD_PID_FILE
@@ -45,7 +45,7 @@ function reload() {
 }
 
 function restart() {
-    echo "Restarting PHP ${OPENSHIFT_PHP_VERSION} cartridge (Apache+mod_php)"
+    echo "Restarting PHP ${DREAMCART_PHP_VERSION} (Apache+mod_php)"
     ensure_httpd_restart_succeed "$HTTPD_PID_FILE" "$HTTPD_CFG_FILE"
     if [ -f "$HTTPD_PID_FILE" ]; then
         pre_start_httpd_config
@@ -59,7 +59,7 @@ function restart() {
 }
 
 function stop() {
-    echo "Stopping PHP ${OPENSHIFT_PHP_VERSION} cartridge (Apache+mod_php)"
+    echo "Stopping PHP ${DREAMCART_PHP_VERSION} (Apache+mod_php)"
     ensure_valid_httpd_pid_file "$HTTPD_PID_FILE" "$HTTPD_CFG_FILE"
     if [ -f "$HTTPD_PID_FILE" ]; then
       # If we still have a PID file, then ensure_valid_httpd_process's call to
