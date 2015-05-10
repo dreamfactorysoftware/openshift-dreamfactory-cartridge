@@ -75,7 +75,7 @@ function configtest() {
 }
 
 function status() {
-    if output=$(curl http://$OPENSHIFT_PHP_IP:$OPENSHIFT_PHP_PORT/server-status?auto 2>&1 ); then
+    if output=$(curl http://$OPENSHIFT_DREAMCART_IP:$OPENSHIFT_DREAMCART_PORT/server-status?auto 2>&1 ); then
         client_result "Application is running"
         client_result $output
     else
