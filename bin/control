@@ -1,12 +1,12 @@
 #!/bin/bash -e
 
-source ${OPENSHIFT_PHP_DIR}usr/lib/php_config
+source ${OPENSHIFT_DREAMCART_DIR}usr/php/lib/php_config
 
-HTTPD_CFG_FILE=$OPENSHIFT_PHP_DIR/configuration/etc/conf/httpd_nolog.conf
-HTTPD_CFG_DIR=$OPENSHIFT_PHP_DIR/configuration/etc/conf.d
-ERB_HTTPD_CFG_DIR=$OPENSHIFT_PHP_DIR/usr/shared/etc/conf.d/
+HTTPD_CFG_FILE=$OPENSHIFT_DREAMFACTORY_DIR/configuration/etc/conf/httpd_nolog.conf
+HTTPD_CFG_DIR=$OPENSHIFT_DREAMFACTORY_DIR/configuration/etc/conf.d
+ERB_HTTPD_CFG_DIR=$OPENSHIFT_DREAMFACTORY_DIR/usr/php/shared/etc/conf.d/
 HTTPD_PASSENV_FILE=$HTTPD_CFG_DIR/passenv.conf
-HTTPD_PID_FILE=$OPENSHIFT_PHP_DIR/run/httpd.pid
+HTTPD_PID_FILE=$OPENSHIFT_DREAMFACTORY_DIR/run/httpd.pid
 
 # construct the configuration directives for httpd
 HTTPD_CMD_CONF="-C 'Include $HTTPD_CFG_DIR/*.conf' -f $HTTPD_CFG_FILE"
@@ -19,7 +19,7 @@ function pre_start_httpd_config {
     write_httpd_passenv $HTTPD_PASSENV_FILE
     select_php_document_root ${OPENSHIFT_REPO_DIR}
     oo-erb ${ERB_HTTPD_CFG_DIR}openshift.conf.erb > ${HTTPD_CFG_DIR}/openshift.conf
-    oo-erb ${OPENSHIFT_PHP_DIR}conf/performance.conf.erb.hidden > $HTTPD_CFG_DIR/performance.conf
+    oo-erb ${OPENSHIFT_DREAMFACTORY_DIR}conf/performance.conf.erb.hidden > $HTTPD_CFG_DIR/performance.conf
     enable_modules
     ensure_valid_httpd_process "$HTTPD_PID_FILE" "$HTTPD_CFG_FILE"
 }
@@ -93,7 +93,7 @@ function build() {
     # Force clean build (.openshift/markers/force_clean_build)
     if force_clean_build_enabled_for_latest_deployment; then
         echo "Force clean build enabled - recreating PEARs"
-        mkdir -p ${OPENSHIFT_PHP_DIR}phplib/pear/{docs,ext,php,cache,cfg,data,download,temp,tests,www}
+        mkdir -p ${OPENSHIFT_DREAMFACTORY_DIR}phplib/pear/{docs,ext,php,cache,cfg,data,download,temp,tests,www}
     fi
 
     # PEAR
@@ -129,7 +129,7 @@ function build() {
             echo
             # Remove gear-specific absolute paths from the generated PEAR
             # files except from the hidden dirs/files (cache, registry etc.)
-            find ${OPENSHIFT_PHP_DIR}phplib/pear/pear/ -type f \( ! -regex '.*/\..*' \) \
+            find ${OPENSHIFT_DREAMFACTORY_DIR}phplib/pear/pear/ -type f \( ! -regex '.*/\..*' \) \
               -exec sed -i "s|${OPENSHIFT_HOMEDIR}|~/|g" {} \;
         done
 
