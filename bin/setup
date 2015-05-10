@@ -5,26 +5,40 @@ case "$1" in
     version="$2"
 esac
 
-source ${OPENSHIFT_PHP_DIR}usr/lib/php_config
+case $version in
+    "1.9")
+      DREAMFACTORY_PHP_VERSION="5.4"
+    ;;
+    *)
+      DREAMFACTORY_PHP_VERSION="5.4"
+    ;;
+esac
 
-# Copy the version specific files up to php directory
+echo ${DREAMFACTORY_PHP_VERSION} > ${OPENSHIFT_DREAMFACTORY_DIR}env/DREAMFACTORY_PHP_VERSION
+
+source ${OPENSHIFT_DREAMFACTORY_DIR}usr/php/lib/php_config
+
+# Copy the version specific files up to php configuration directory
+
+# Setting the dotglob option will make bash include "hidden" files (whose names
+# start with a dot) in a glob expansion like *
 shopt -s dotglob
 
-mkdir -p ${OPENSHIFT_PHP_DIR}configuration/etc/php.d
-cp -Hr ${OPENSHIFT_PHP_DIR}usr/shared/etc/* ${OPENSHIFT_PHP_DIR}configuration/etc/
-if [[ -e ${OPENSHIFT_PHP_DIR}usr/$version/etc/conf.d ]]
+mkdir -p ${OPENSHIFT_DREAMFACTORY_DIR}configuration/etc/php.d
+cp -Hr ${OPENSHIFT_DREAMFACTORY_DIR}usr/php/shared/etc/* ${OPENSHIFT_DREAMFACTORY_DIR}configuration/etc/
+if [[ -e ${OPENSHIFT_DREAMFACTORY_DIR}usr/php/$DREAMFACTORY_PHP_VERSION/etc/conf.d ]]
 then
-    cp -Hr ${OPENSHIFT_PHP_DIR}usr/$version/etc/conf.d/* ${OPENSHIFT_PHP_DIR}configuration/etc/conf.d
+    cp -Hr ${OPENSHIFT_DREAMFACTORY_DIR}usr/php/$DREAMFACTORY_PHP_VERSION/etc/conf.d/* ${OPENSHIFT_DREAMFACTORY_DIR}configuration/etc/conf.d
 fi
 # Make sure this file exists
-echo > ${OPENSHIFT_PHP_DIR}/configuration/etc/php.d/openshift.ini
+echo > ${OPENSHIFT_DREAMFACTORY_DIR}/configuration/etc/php.d/openshift.ini
 
 # Create/truncate gear-editable Apache configuration files
-echo > $OPENSHIFT_PHP_DIR/configuration/etc/conf.d/openshift.conf
-echo > $OPENSHIFT_PHP_DIR/configuration/etc/conf.d/passenv.conf
-echo > $OPENSHIFT_PHP_DIR/configuration/etc/conf.d/performance.conf
-echo > $OPENSHIFT_PHP_DIR/configuration/etc/conf.d/server-status.conf
+echo > $OPENSHIFT_DREAMFACTORY_DIR/configuration/etc/conf.d/openshift.conf
+echo > $OPENSHIFT_DREAMFACTORY_DIR/configuration/etc/conf.d/passenv.conf
+echo > $OPENSHIFT_DREAMFACTORY_DIR/configuration/etc/conf.d/performance.conf
+echo > $OPENSHIFT_DREAMFACTORY_DIR/configuration/etc/conf.d/server-status.conf
 
-mkdir -p ${OPENSHIFT_PHP_DIR}conf
-cp ${OPENSHIFT_PHP_DIR}usr/shared/etc/conf.d/performance.conf.erb ${OPENSHIFT_PHP_DIR}conf/performance.conf.erb
-cp ${OPENSHIFT_PHP_DIR}conf/performance.conf.erb ${OPENSHIFT_PHP_DIR}conf/performance.conf.erb.hidden
+mkdir -p ${OPENSHIFT_DREAMFACTORY_DIR}conf
+cp ${OPENSHIFT_DREAMFACTORY_DIR}usr/php/shared/etc/conf.d/performance.conf.erb ${OPENSHIFT_DREAMFACTORY_DIR}conf/performance.conf.erb
+cp ${OPENSHIFT_DREAMFACTORY_DIR}conf/performance.conf.erb ${OPENSHIFT_DREAMFACTORY_DIR}conf/performance.conf.erb.hidden
