@@ -11,20 +11,20 @@ case "$1" in
     version="$2"
 esac
 
-echo "$version" > ${OPENSHIFT_PHP_DIR}env/OPENSHIFT_PHP_VERSION
-export OPENSHIFT_PHP_VERSION="$version"
+echo "$version" > ${OPENSHIFT_DREAMFACTORY_DIR}env/OPENSHIFT_DREAMFACTORY_VERSION
+export OPENSHIFT_DREAMFACTORY_VERSION="$version"
 
-source ${OPENSHIFT_PHP_DIR}usr/lib/php_config
+source ${OPENSHIFT_DREAMFACTORY_DIR}usr/php/lib/php_config
 enable_modules
 
 # Create additional directories required by PHP
-mkdir -p $OPENSHIFT_PHP_DIR/phplib/pear/{docs,ext,php,cache,cfg,data,download,temp,tests,www}
-mkdir -p $OPENSHIFT_PHP_DIR/{run,tmp,sessions}
+mkdir -p $OPENSHIFT_DREAMFACTORY_DIR/phplib/pear/{docs,ext,php,cache,cfg,data,download,temp,tests,www}
+mkdir -p $OPENSHIFT_DREAMFACTORY_DIR/{run,tmp,sessions}
 
-rm -f $OPENSHIFT_PHP_DIR/modules $OPENSHIFT_PHP_DIR/conf/magic
-ln -s ${_libdir}/httpd/modules $OPENSHIFT_PHP_DIR/modules
-mkdir -p ${OPENSHIFT_PHP_DIR}conf
-ln -s /etc/httpd/conf/magic $OPENSHIFT_PHP_DIR/conf/magic
+rm -f $OPENSHIFT_DREAMFACTORY_DIR/modules $OPENSHIFT_DREAMFACTORY_DIR/conf/magic
+ln -s ${_libdir}/httpd/modules $OPENSHIFT_DREAMFACTORY_DIR/modules
+mkdir -p ${OPENSHIFT_DREAMFACTORY_DIR}conf
+ln -s /etc/httpd/conf/magic $OPENSHIFT_DREAMFACTORY_DIR/conf/magic
 
 # Create a writable directory for Drush settings
 mkdir -p ${OPENSHIFT_HOMEDIR}{.drush,.composer}
@@ -32,8 +32,8 @@ chown $OPENSHIFT_GEAR_UUID:$OPENSHIFT_GEAR_UUID ${OPENSHIFT_HOMEDIR}{.drush,.com
 
 # Pear setup
 rm -f $OPENSHIFT_HOMEDIR/.pearrc
-php_context "pear config-create ${OPENSHIFT_PHP_DIR}phplib/pear/ ${OPENSHIFT_HOMEDIR}.pearrc"
-php_context "pear -c ${OPENSHIFT_HOMEDIR}.pearrc config-set php_ini ${OPENSHIFT_PHP_DIR}configuration/etc/php.ini"
+php_context "pear config-create ${OPENSHIFT_DREAMFACTORY_DIR}phplib/pear/ ${OPENSHIFT_HOMEDIR}.pearrc"
+php_context "pear -c ${OPENSHIFT_HOMEDIR}.pearrc config-set php_ini ${OPENSHIFT_DREAMFACTORY_DIR}configuration/etc/php.ini"
 php_context "pear -c ${OPENSHIFT_HOMEDIR}.pearrc config-set auto_discover 1"
 php_context "pear -c ${OPENSHIFT_HOMEDIR}.pearrc channel-update pear.php.net" || true
 
