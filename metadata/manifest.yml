@@ -1,42 +1,27 @@
 ---
-Name: php
-Cartridge-Short-Name: PHP
-Display-Name: PHP 5.4
-Description: PHP is a general-purpose server-side scripting language originally designed
-  for Web development to produce dynamic Web pages. Popular development frameworks
-  include CakePHP, Zend, Symfony, and Code Igniter.
-Version: '5.4'
+Name: dreamfactory
+Cartridge-Short-Name: DREAMFACTORY
+Display-Name: DreamFactory 1.9
+Description: DreamFactory is an open source mobile backend that provides
+  RESTful services for building modern applications.
+  https://github.com/dreamfactorysoftware/dsp-core
+Version: '1.9'
 Provides:
-- php-5.4
-- php
+- dreamfactory-1.9
+- dreamfactory
 Versions:
-- '5.4'
-- '5.3'
-Version-Overrides:
-  '5.3':
-    Display-Name: PHP 5.3
-    Provides:
-    - php-5.3
-    - php
-License: The PHP License, version 3.0
-License-Url: http://www.php.net/license/3_0.txt
-Vendor: php.net
-Cartridge-Version: 0.0.26
-Compatible-Versions:
-- 0.0.20
-- 0.0.21
-- 0.0.22
-- 0.0.23
-- 0.0.24
-- 0.0.25
-Cartridge-Vendor: redhat
+- '1.9'
+License: Apache License, version 2.0
+License-Url: http://www.apache.org/licenses/
+Vendor: dreamfactory
+Cartridge-Version: 0.0.1
+Cartridge-Vendor: dreamfactory
 Categories:
 - service
-- php
 - web_framework
-Website: http://www.php.net
+Website: http://www.dreamfactory.com/
 Help-Topics:
-  Developer Portal: https://developers.openshift.com/en/php-overview.html
+  Documentation: https://github.com/dreamfactorysoftware/dsp-core/wiki
 Publishes:
   get-php-ini:
     Type: FILESYSTEM:php-ini
