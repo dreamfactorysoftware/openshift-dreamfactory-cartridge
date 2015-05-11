@@ -14,6 +14,8 @@ case $version in
     ;;
 esac
 
+ln -s ${OPENSHIFT_DREAMFACTORY_DIR}usr/dsp-core/$version/template ${OPENSHIFT_DREAMFACTORY_DIR}template
+
 echo ${DREAMFACTORY_PHP_VERSION} > ${OPENSHIFT_DREAMFACTORY_DIR}env/DREAMFACTORY_PHP_VERSION
 
 source ${OPENSHIFT_DREAMFACTORY_DIR}usr/php/lib/php_config
