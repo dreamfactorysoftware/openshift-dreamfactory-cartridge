@@ -1,0 +1,48 @@
+<VirtualHost *:80>
+     ServerName dsp.local
+#     ServerAlias your_dsp.domain.com
+     ServerAdmin webmaster@localhost
+     DocumentRoot /var/www/launchpad
+
+     <Directory /var/www/launchpad>
+         Options -Indexes FollowSymLinks -MultiViews
+         AllowOverride None
+
+		 ###
+		 ### 	Using an .htaccess file slows down your DSP. So the settings are here.
+		 ### 	If this is not accessible to you, just copy the docs/apache/htaccess.dist
+		 ###	file to your web/.htaccess. edit accordingly. Be sure to comment out the
+		 ###	section below if you do this.
+		 ###
+
+		 ### BEGIN: .htaccess inline ###
+         RewriteEngine on
+         RewriteBase /
+
+         #   Force login to be SSL
+         RewriteCond %{HTTPS} !=on
+         RewriteCond %{HTTP_HOST} ^(.+)\.cloud\.dreamfactory\.com$ [NC]
+         RewriteRule ^/?web/login/?(.*) https://%{SERVER_NAME}/web/login/$1 [R,L]
+
+         # if ack directory or a file exists, use it directly
+         RewriteCond %{REQUEST_FILENAME} !-f
+         RewriteCond %{REQUEST_FILENAME} !-d
+
+         # otherwise forward it to index.php
+         RewriteRule ^.*$ /index.php [L]
+		 ### END: .htaccess inline ###
+
+         <LimitExcept GET HEAD PUT DELETE PATCH POST>
+             Allow from all
+         </LimitExcept>
+     </Directory>
+
+     ErrorLog ${APACHE_LOG_DIR}/dsp.error.log
+
+     # Possible values include: debug, info, notice, warn, error, crit,
+     # alert, emerg.
+     LogLevel warn
+
+     CustomLog ${APACHE_LOG_DIR}/dsp.access.log combined
+
+ </VirtualHost>

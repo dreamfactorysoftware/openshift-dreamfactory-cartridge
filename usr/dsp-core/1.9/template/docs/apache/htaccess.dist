@@ -1,9 +1,7 @@
-#!/bin/bash
-#
 # This file is part of the DreamFactory Services Platform(tm) (DSP)
 #
 # DreamFactory Services Platform(tm) <http://github.com/dreamfactorysoftware/dsp-core>
-# Copyright 2012-2014 DreamFactory Software, Inc. <support@dreamfactory.com>
+# Copyright 2012-2013 DreamFactory Software, Inc. <support@dreamfactory.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,4 +15,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cp config/databases/database.heroku.config.php-dist config/database.config.php
+IndexIgnore */*
+RewriteEngine on
+RewriteBase /
+
+#	Force SSL
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP_HOST} ^(.+)\.cloud\.dreamfactory\.com$ [NC]
+RewriteRule  (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L]
+
+# if a directory or a file exists, use it directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# otherwise forward it to index.php
+RewriteRule ^.*$ /index.php [L]
