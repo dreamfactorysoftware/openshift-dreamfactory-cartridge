@@ -24,10 +24,10 @@
  */
 $_url = parse_url( getenv( 'CLEARDB_DATABASE_URL' ) );
 $_server = getenv('OPENSHIFT_MYSQL_DB_HOST');
-$_username = getenv('OPENSHIFT_MYSQL_DB_USER');
-$_password = getenv('OPENSHIFT_MYSQL_DB_PASS');
+$_username = getenv('OPENSHIFT_MYSQL_DB_USERNAME');
+$_password = getenv('OPENSHIFT_MYSQL_DB_PASSWORD');
 $_port = getenv('OPENSHIFT_MYSQL_DB_PORT');
-$_db = getenv('OPENSHIFT_MYSQL_DB_NAME');
+$_db = getenv('OPENSHIFT_APP_NAME');
 
 return array(
     'connectionString'      => 'mysql:host=' . $_server . ';port=' . $_port . ';dbname=' . $_db,
