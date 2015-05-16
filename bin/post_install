@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Call the deploy script of dsp-core once after install since OpenShift doesn't
+# do it for us.
+sh ${OPENSHIFT_REPO_DIR}.openshift/action_hooks/deploy
+
