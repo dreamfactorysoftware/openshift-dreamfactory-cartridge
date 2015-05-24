@@ -3,7 +3,7 @@
 unset GIT_DIR
 cd $OPENSHIFT_REPO_DIR
 touch post_install_called
-# curl -sS https://getcomposer.org/installer | php
+curl -sS https://getcomposer.org/installer | php
 # php composer.phar install --prefer-source --no-interaction --no-dev
 # php composer.phar dump-autoload
 # 
