@@ -1,16 +1,4 @@
 #!/bin/bash
 
-# unset GIT_DIR
-# cd $OPENSHIFT_REPO_DIR
-# curl -sS https://getcomposer.org/installer | php
-# php composer.phar install --prefer-source --no-interaction --no-dev
-# php composer.phar dump-autoload
-# 
-# cp config/databases/database.openshift.config.php-dist config/database.config.php
-# 
-# if ! readlink storage; then
-#     rm -rf storage
-#     ln -s $OPENSHIFT_DATA_DIR storage
-# fi
 source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/deploy
 
