@@ -1,22 +1,16 @@
 #!/bin/bash
 
-unset GIT_DIR
-cd $OPENSHIFT_REPO_DIR
-touch post_install_called
-echo $OPENSHIFT_MYSQL_DB_USERNAME >>post_install_called
-echo $OPENSHIFT_MYSQL_DB_PASSWORD >>post_install_called
-curl -sS https://getcomposer.org/installer | php
-php composer.phar install --prefer-source --no-interaction --no-dev
-echo 'php composer.phar install --prefer-source --no-interaction --no-dev' >>post_install_called
-php composer.phar dump-autoload
-echo 'php composer.phar dump-autoload' >>post_install_called
-
-cp config/databases/database.openshift.config.php-dist config/database.config.php
-echo 'cp config/databases/database.openshift.config.php-dist config/database.config.php' >>post_install_called
-
-if ! readlink storage; then
-    rm -rf storage
-    ln -s $OPENSHIFT_DATA_DIR storage
-fi
-echo 'post_install completed' >>post_install_called
+# unset GIT_DIR
+# cd $OPENSHIFT_REPO_DIR
+# curl -sS https://getcomposer.org/installer | php
+# php composer.phar install --prefer-source --no-interaction --no-dev
+# php composer.phar dump-autoload
+# 
+# cp config/databases/database.openshift.config.php-dist config/database.config.php
+# 
+# if ! readlink storage; then
+#     rm -rf storage
+#     ln -s $OPENSHIFT_DATA_DIR storage
+# fi
+source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/deploy
 
