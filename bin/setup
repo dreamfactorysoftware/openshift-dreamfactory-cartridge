@@ -15,7 +15,7 @@ case $version in
 esac
 
 cd ${OPENSHIFT_DREAMFACTORY_DIR}
-wget github.com/yati-sagade/dsp-core/archive/master.zip &>/dev/null && unzip master.zip &>/dev/null
+wget github.com/dreamfactorysoftware/dsp-core/archive/master.zip &>/dev/null && unzip master.zip &>/dev/null
 rm -f master.zip
 mv dsp-core-master template
 cd -
