@@ -1,32 +1,39 @@
----
 Name: dreamfactory
-Cartridge-Short-Name: DREAMFACTORY
-Display-Name: DreamFactory 1.9
-Description: DreamFactory is an open source mobile backend that provides
-  RESTful services for building modern applications.
-  https://github.com/dreamfactorysoftware/dsp-core
-Version: '1.9'
-Provides:
-- dreamfactory-1.9
-- dreamfactory
-Requires:
-- mysql-5.5
-Versions:
-- '1.9'
-License: Apache License, version 2.0
-License-Url: http://www.apache.org/licenses/
-Vendor: dreamfactory
-Cartridge-Version: 0.0.1
-Cartridge-Vendor: dreamfactory
+Cartridge-Short-Name: NGINX
+Display-Name: "DreamFactory 2.0"
+Description: "DreamFactory is an open source mobile backend that provides RESTful services for building modern applications. https://github.com/dreamfactorysoftware/dsp-core"
+Version: "2.0"
+Website: https://www.dreamfactory.com
+Cartridge-Version: 0.0.2
+Cartridge-Vendor: dreamfactorysoftware
 Categories:
-- service
-- web_framework
-Website: http://www.dreamfactory.com/
-Help-Topics:
-  Documentation: https://github.com/dreamfactorysoftware/dsp-core/wiki
+  - web_framework
+  - service
+  - nginx
+Provides:
+  - nginx-1.8
+  - nginx
+  - php-5.5
+  - php
+Requires:
+  - mysql-5.5
+Scaling:
+  Min: 1
+  Max: -1
+Cart-Data:
+  - Key: OPENSHIFT_NGINX_PORT
+    Type: environment
+    Description: "Internal port to which the web-framework binds to."
+  - Key: OPENSHIFT_NGINX_IP
+    Type: environment
+    Description: "Internal IP to which the web-framework binds to."
 Publishes:
-  get-php-ini:
-    Type: FILESYSTEM:php-ini
+  get-doc-root:
+    Type: "FILESYSTEM:doc-root"
+  publish-http-url:
+    Type: "NET_TCP:httpd-proxy-info"
+  publish-gear-endpoint:
+    Type: "NET_TCP:gear-endpoint-info"
 Subscribes:
   set-env:
     Type: ENV:*
@@ -34,25 +41,18 @@ Subscribes:
   set-doc-url:
     Type: STRING:urlpath
     Required: false
-Scaling:
-  Min: 1
-  Max: -1
+Group-Overrides:
+  - components:
+    - web_proxy
 Endpoints:
-- Private-IP-Name: IP
-  Private-Port-Name: PORT
-  Private-Port: 8080
-  Public-Port-Name: PROXY_PORT
-  Protocols:
-  - http
-  - ws
-  Options:
-    primary: true
-  Mappings:
-  - Frontend: ''
-    Backend: ''
-    Options:
-      websocket: true
-  - Frontend: /health
-    Backend: ''
-    Options:
-      health: true
+  - Private-IP-Name:   IP
+    Private-Port-Name: PORT
+    Private-Port:      8080
+    Public-Port-Name:  PROXY_PORT
+    Mappings:
+      - Frontend:      ""
+        Backend:       ""
+        Options:       { websocket: true }
+      - Frontend:      "/health"
+        Backend:       ""
+        Options:       { health: true }

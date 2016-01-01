@@ -1,4 +1,25 @@
 #!/bin/bash
 
-source ${OPENSHIFT_REPO_DIR}/.openshift/action_hooks/deploy
+git clone https://github.com/dreamfactorysoftware/dreamfactory.git  $OPENSHIFT_REPO_DIR/df
+cd $OPENSHIFT_REPO_DIR/df
+composer install --no-dev  --no-interaction
+chmod -R a+w storage
+chmod -R a+w bootstrap/cache
 
+cat > .env << EOF
+APP_ENV=local
+APP_DEBUG=false
+APP_KEY=juskODLLtwGPwNHQYOpjeZo0CVIk7eZ5
+APP_LOG=single
+DB_DRIVER=mysql
+CACHE_DRIVER=file
+SESSION_DRIVER=array
+MAIL_DRIVER=mail
+DF_INSTALL=GitHub
+EOF
+
+echo "DB_HOST=${OPENSHIFT_MYSQL_DB_HOST}" >> .env
+echo "DB_PORT=${OPENSHIFT_MYSQL_DB_PORT}" >> .env
+echo "DB_DATABASE=${OPENSHIFT_APP_NAME}" >> .env
+echo "DB_USERNAME=${OPENSHIFT_MYSQL_DB_USERNAME}" >> .env
+echo "DB_PASSWORD=${OPENSHIFT_MYSQL_DB_PASSWORD}" >> .env

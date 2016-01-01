@@ -1,52 +1,56 @@
-#!/bin/bash -eu
+#!/bin/bash
+set -e
+export OPENSHIFT_PHP_DIR=${OPENSHIFT_NGINX_DIR}
+echo "${OPENSHIFT_PHP_DIR}" > env/OPENSHIFT_PHP_DIR
+
+
+export OPENSHIFT_PHP_LIBS_DIR=${OPENSHIFT_NGINX_DIR}usr/shared/libs
+echo "${OPENSHIFT_PHP_LIBS_DIR}" > env/OPENSHIFT_PHP_LIBS_DIR
+
+
+export OPENSHIFT_PHP_LD_LIBRARY_PATH_ELEMENT=${OPENSHIFT_NGINX_DIR}/usr/shared/libs/lib
+echo "${OPENSHIFT_PHP_LD_LIBRARY_PATH_ELEMENT}" > env/OPENSHIFT_PHP_LD_LIBRARY_PATH_ELEMENT
 
 case "$1" in
   -v|--version)
     version="$2"
 esac
 
-case $version in
-    "1.9")
-      DREAMFACTORY_PHP_VERSION="5.4"
-    ;;
-    *)
-      DREAMFACTORY_PHP_VERSION="5.4"
-    ;;
-esac
-
-cd ${OPENSHIFT_DREAMFACTORY_DIR}
-wget github.com/dreamfactorysoftware/dsp-core/archive/master.zip &>/dev/null && unzip master.zip &>/dev/null
-rm -f master.zip
-mv dsp-core-master template
-cd -
-
-# ln -s ${OPENSHIFT_DREAMFACTORY_DIR}usr/dsp-core/$version/template ${OPENSHIFT_DREAMFACTORY_DIR}template
-
-echo ${DREAMFACTORY_PHP_VERSION} > ${OPENSHIFT_DREAMFACTORY_DIR}env/DREAMFACTORY_PHP_VERSION
-
-source ${OPENSHIFT_DREAMFACTORY_DIR}usr/php/lib/php_config
-
-# Copy the version specific files up to php configuration directory
-
-# Setting the dotglob option will make bash include "hidden" files (whose names
-# start with a dot) in a glob expansion like *
-shopt -s dotglob
-
-mkdir -p ${OPENSHIFT_DREAMFACTORY_DIR}configuration/etc/php.d
-cp -Hr ${OPENSHIFT_DREAMFACTORY_DIR}usr/php/shared/etc/* ${OPENSHIFT_DREAMFACTORY_DIR}configuration/etc/
-if [[ -e ${OPENSHIFT_DREAMFACTORY_DIR}usr/php/$DREAMFACTORY_PHP_VERSION/etc/conf.d ]]
-then
-    cp -Hr ${OPENSHIFT_DREAMFACTORY_DIR}usr/php/$DREAMFACTORY_PHP_VERSION/etc/conf.d/* ${OPENSHIFT_DREAMFACTORY_DIR}configuration/etc/conf.d
+# Resolve version
+NGINX_VERSION=1.8.0
+if [ ! -z "${OPENSHIFT_NGINX_VERSION}" ] && [ -d "${OPENSHIFT_NGINX_DIR}/usr/nginx-${OPENSHIFT_NGINX_VERSION}/" ]; then
+    NGINX_VERSION="${OPENSHIFT_NGINX_VERSION}"
+elif [ -d "${OPENSHIFT_NGINX_DIR}/usr/nginx-${version}/" ]; then
+    NGINX_VERSION="${version}"
 fi
-# Make sure this file exists
-echo > ${OPENSHIFT_DREAMFACTORY_DIR}/configuration/etc/php.d/openshift.ini
+# Resolve version
+PHP_VERSION=5.5.22
+PHP_VERSION_DIR=${OPENSHIFT_PHP_DIR}/usr/php-${PHP_VERSION}
 
-# Create/truncate gear-editable Apache configuration files
-echo > $OPENSHIFT_DREAMFACTORY_DIR/configuration/etc/conf.d/openshift.conf
-echo > $OPENSHIFT_DREAMFACTORY_DIR/configuration/etc/conf.d/passenv.conf
-echo > $OPENSHIFT_DREAMFACTORY_DIR/configuration/etc/conf.d/performance.conf
-echo > $OPENSHIFT_DREAMFACTORY_DIR/configuration/etc/conf.d/server-status.conf
+# Create dirs
+dirs=( "logs" "run" )
+for dir in ${dirs[@]}; do
+    mkdir -p "${OPENSHIFT_NGINX_DIR}/${dir}"
+done
+# Create dirs
+mkdir -p ${OPENSHIFT_PHP_DIR}/{pid,socket,run,ext,composer/.composer,composer/bin}
 
-mkdir -p ${OPENSHIFT_DREAMFACTORY_DIR}conf
-cp ${OPENSHIFT_DREAMFACTORY_DIR}usr/php/shared/etc/conf.d/performance.conf.erb ${OPENSHIFT_DREAMFACTORY_DIR}conf/performance.conf.erb
-cp ${OPENSHIFT_DREAMFACTORY_DIR}conf/performance.conf.erb ${OPENSHIFT_DREAMFACTORY_DIR}conf/performance.conf.erb.hidden
+# Copy default extensions
+if [ -d ${PHP_VERSION_DIR}/ext/ ]; then
+    rm -rf ${OPENSHIFT_PHP_DIR}/ext
+    cp -R ${PHP_VERSION_DIR}/ext/ ${OPENSHIFT_PHP_DIR}/ext/
+fi
+
+# Set version env variable
+export OPENSHIFT_NGINX_VERSION=${NGINX_VERSION}
+
+echo "${NGINX_VERSION}" > ${OPENSHIFT_NGINX_DIR}/env/OPENSHIFT_NGINX_VERSION
+echo "${OPENSHIFT_NGINX_DIR}/usr/nginx-${OPENSHIFT_NGINX_VERSION}" > ${OPENSHIFT_NGINX_DIR}/env/OPENSHIFT_NGINX_VERSION_DIR
+
+# Set version env variables
+echo "${PHP_VERSION}" > env/OPENSHIFT_PHP_VERSION
+echo "${OPENSHIFT_PHP_DIR}" > env/OPENSHIFT_PHP_DIR
+echo "${PHP_VERSION}" > env/OPENSHIFT_PHP_VERSION
+echo "${PHP_VERSION_DIR}" > env/OPENSHIFT_PHP_VERSION_DIR
+echo "${PHP_VERSION_DIR}/bin:${OPENSHIFT_PHP_DIR}/composer/bin" > env/OPENSHIFT_PHP_PATH_ELEMENT
+echo $(eval echo `${PHP_VERSION_DIR}/bin/php-config --extension-dir`) > env/OPENSHIFT_PHP_EXTENSION_DIR
