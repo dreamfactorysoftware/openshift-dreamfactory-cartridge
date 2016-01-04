@@ -5,6 +5,6 @@ DreamFactory is an open source mobile backend that provides RESTful services for
 
 This cartridge lets you instantly deploy DreamFactory on OpenShift. To create an application using this cartridge, simply type
 
-    $ rhc create-app dreamfactory http://cartreflect-claytondev.rhcloud.com/github/dreamfactorysoftware/dreamfactory-openshift-cartridge
+    $ rhc create-app dreamfactory http://cartreflect-claytondev.rhcloud.com/github/dreamfactorysoftware/openshift-dreamfactory-cartridge
 
 
