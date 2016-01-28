@@ -31,7 +31,7 @@ if [ -f "${COMPOSER_PATH}" ]; then
     ${COMPOSER_PATH} self-update
 else
     pushd `dirname ${COMPOSER_PATH}`
-    php -r "readfile('https://getcomposer.org/installer');" | php
+    php -r "readfile('https://raw.githubusercontent.com/composer/getcomposer.org/67762454dd8fe5422981f40df7d0755bf712b2a8/web/installer');" | php
     mv composer.phar "${COMPOSER_PATH}"
     popd
 fi
