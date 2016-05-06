@@ -2,7 +2,7 @@
 
 git clone https://github.com/dreamfactorysoftware/dreamfactory.git  $OPENSHIFT_REPO_DIR/df
 cd $OPENSHIFT_REPO_DIR/df
-composer install --no-dev  --no-interaction
+composer install --no-dev  --no-interaction --ignore-platform-reqs
 chmod -R a+w storage
 chmod -R a+w bootstrap/cache
 
