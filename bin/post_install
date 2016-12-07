@@ -1,6 +1,8 @@
 #!/bin/bash
-#git clone -b <branch>
-git clone -b  https://github.com/dreamfactorysoftware/dreamfactory.gitgit clone -b release/2.2.0 https://github.com/dreamfactorysoftware/dreamfactory.gitposer install --no-dev  --no-interaction --ignore-platform-reqs
+
+git clone -b release/2.2.0 https://github.com/dreamfactorysoftware/dreamfactory.git  $OPENSHIFT_REPO_DIR/df
+cd $OPENSHIFT_REPO_DIR/df
+composer install --no-dev  --no-interaction --ignore-platform-reqs
 chmod -R a+w storage
 chmod -R a+w bootstrap/cache
 
@@ -21,3 +23,8 @@ echo "DB_PORT=${OPENSHIFT_MYSQL_DB_PORT}" >> .env
 echo "DB_DATABASE=${OPENSHIFT_APP_NAME}" >> .env
 echo "DB_USERNAME=${OPENSHIFT_MYSQL_DB_USERNAME}" >> .env
 echo "DB_PASSWORD=${OPENSHIFT_MYSQL_DB_PASSWORD}" >> .env
+
+
+
+
+
